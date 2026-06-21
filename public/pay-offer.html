@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الدفع - العرض - صيدلية د/ميرنا صفوت</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="https://i.postimg.cc/KY95Xr8R/Dr-Mirna.jpg" type="image/jpeg">
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --card-bg: #ffffff;
+            --card-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            --border-color: #e0e0e0;
+            --input-bg: #ffffff;
+            --hero-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        [data-bs-theme="dark"] {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --card-bg: #24243e;
+            --card-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            --border-color: #333355;
+            --input-bg: #2d2d4e;
+            --hero-gradient: linear-gradient(135deg, #2d1b4e 0%, #1a1a3e 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--hero-gradient);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .pay-container {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--card-shadow);
+            max-width: 550px;
+            width: 100%;
+            position: relative;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            padding: 8px 12px;
+            cursor: pointer;
+            color: var(--text-primary);
+            transition: all 0.3s;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+            border-color: #667eea;
+        }
+
+        .theme-toggle .sun-icon {
+            display: inline-block;
+        }
+        .theme-toggle .moon-icon {
+            display: none;
+        }
+
+        [data-bs-theme="dark"] .theme-toggle .sun-icon {
+            display: none;
+        }
+        [data-bs-theme="dark"] .theme-toggle .moon-icon {
+            display: inline-block;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+            border: 3px solid #667eea;
+            padding: 3px;
+        }
+
+        .logo h3 {
+            color: #667eea;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .logo p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .offer-summary {
+            background: var(--bg-secondary);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border-color);
+        }
+
+        .offer-summary h5 {
+            color: var(--text-primary);
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .offer-summary .offer-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .offer-summary .offer-details {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .offer-summary .offer-details:last-child {
+            border-bottom: none;
+        }
+
+        .offer-summary .total {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-top: 2px solid #667eea;
+            margin-top: 10px;
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+        }
+
+        .form-control {
+            border-radius: 10px;
+            padding: 12px 15px;
+            border: 2px solid var(--border-color);
+            background: var(--input-bg);
+            color: var(--text-primary);
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            background: var(--input-bg);
+            color: var(--text-primary);
+        }
+
+        .form-control::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .form-label {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .btn-pay {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s;
+        }
+
+        .btn-pay:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(40, 167, 69, 0.4);
+            color: white;
+        }
+
+        .btn-pay:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .alert {
+            border-radius: 10px;
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .back-home {
+            display: inline-block;
+            margin-top: 15px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .back-home:hover {
+            color: #667eea;
+        }
+
+        .payment-info {
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            padding: 15px;
+            border: 2px dashed #ff6b00;
+            margin-bottom: 20px;
+        }
+
+        .payment-info .label {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .payment-info .number {
+            color: #ff6b00;
+            font-size: 1.5rem;
+            font-weight: 700;
+            direction: ltr;
+            text-align: center;
+            margin: 5px 0;
+        }
+
+        .payment-info .note {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            text-align: center;
+        }
+
+        .payment-info .copy-btn {
+            background: #ff6b00;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 15px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .payment-info .copy-btn:hover {
+            background: #e55a00;
+            transform: scale(1.05);
+        }
+
+        .divider {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--border-color);
+        }
+
+        .divider span {
+            background: var(--card-bg);
+            padding: 0 15px;
+            position: relative;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 480px) {
+            .pay-container {
+                padding: 30px 20px;
+            }
+            .logo h3 {
+                font-size: 1.2rem;
+            }
+            .theme-toggle {
+                top: 10px;
+                left: 10px;
+                padding: 5px 10px;
+                font-size: 1rem;
+            }
+            .payment-info .number {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="pay-container">
+        <button class="theme-toggle" id="themeToggle" title="تغيير الوضع">
+            <span class="sun-icon"><i class="fas fa-sun"></i></span>
+            <span class="moon-icon"><i class="fas fa-moon"></i></span>
+        </button>
+
+        <div class="logo">
+            <img src="https://i.postimg.cc/KY95Xr8R/Dr-Mirna.jpg" alt="Dr. Mirna">
+            <h3>صيدلية د/ميرنا صفوت</h3>
+            <p>إتمام شراء العرض</p>
+        </div>
+
+        <div id="alertContainer"></div>
+
+        <!-- Offer Summary -->
+        <div class="offer-summary">
+            <h5><i class="fas fa-tags"></i> تفاصيل العرض</h5>
+            <div class="offer-name" id="offerName">جاري التحميل...</div>
+            <div class="offer-details">
+                <span>الخصم</span>
+                <span id="offerDiscount">-</span>
+            </div>
+            <div class="offer-details">
+                <span>السعر الأصلي</span>
+                <span id="offerOldPrice">-</span>
+            </div>
+            <div class="offer-details">
+                <span>السعر بعد الخصم</span>
+                <span id="offerNewPrice">-</span>
+            </div>
+            <div class="total">
+                <span>الإجمالي</span>
+                <span id="totalAmount">-</span>
+            </div>
+        </div>
+
+        <!-- Payment Form -->
+        <form id="paymentForm">
+            <!-- Customer Info -->
+            <div class="form-group">
+                <label class="form-label">اسم العميل</label>
+                <input type="text" class="form-control" id="customerName" placeholder="أدخل اسمك الكامل" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">رقم الهاتف</label>
+                <input type="tel" class="form-control" id="customerPhone" placeholder="أدخل رقم الهاتف" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">عنوان التوصيل</label>
+                <input type="text" class="form-control" id="deliveryAddress" placeholder="أدخل عنوان التوصيل" required>
+            </div>
+
+            <!-- Payment Info -->
+            <div class="payment-info">
+                <div class="label text-center">طريقة الدفع: أورنج كاش</div>
+                <div class="number" id="paymentNumber">01208881905</div>
+                <div class="label text-center">مينا ل*** ر****** ي***</div>
+                <div class="note">
+                    قم بتحويل المبلغ المطلوب على الرقم أعلاه
+                    <br>
+                    <button type="button" class="copy-btn mt-2" onclick="copyNumber()">
+                        <i class="fas fa-copy"></i> نسخ الرقم
+                    </button>
+                </div>
+            </div>
+
+            <!-- Reference Number -->
+            <div class="form-group">
+                <label class="form-label">رقم التحويل المرجعي</label>
+                <input type="text" class="form-control" id="referenceNumber" placeholder="أدخل رقم التحويل" required>
+                <small class="text-muted" style="font-size: 0.8rem;">
+                    <i class="fas fa-info-circle"></i> أدخل رقم التحويل الموجود في إيصال الدفع
+                </small>
+            </div>
+
+            <div class="divider">
+                <span>تأكيد الدفع</span>
+            </div>
+
+            <!-- Submit Payment -->
+            <button type="submit" class="btn btn-pay" id="payBtn">
+                <i class="fas fa-check-circle"></i> تأكيد الدفع
+            </button>
+        </form>
+
+        <div class="text-center mt-3">
+            <a href="/offer" class="back-home">
+                <i class="fas fa-arrow-right"></i> العودة للعروض
+            </a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme Toggle
+            const themeToggle = document.getElementById('themeToggle');
+            const html = document.documentElement;
+            
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            html.setAttribute('data-bs-theme', savedTheme);
+            
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = html.getAttribute('data-bs-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                html.setAttribute('data-bs-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+            });
+
+            // Check authentication
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+
+            // Load offer data
+            loadOfferData();
+
+            async function loadOfferData() {
+                const offerId = localStorage.getItem('selectedOfferId');
+                if (!offerId) {
+                    showAlert('لم يتم اختيار عرض', 'warning');
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/api/offers/' + offerId, {
+                        headers: {
+                            'Authorization': 'Bearer ' + localStorage.getItem('token')
+                        }
+                    });
+
+                    if (!response.ok) throw new Error('فشل تحميل بيانات العرض');
+
+                    const offer = await response.json();
+
+                    document.getElementById('offerName').textContent = offer.name || 'عرض مميز';
+                    document.getElementById('offerDiscount').textContent = offer.discount ? offer.discount + '%' : '-';
+                    document.getElementById('offerOldPrice').textContent = offer.oldPrice ? offer.oldPrice + ' جنيه' : '-';
+                    document.getElementById('offerNewPrice').textContent = offer.price + ' جنيه';
+                    document.getElementById('totalAmount').textContent = offer.price + ' جنيه';
+
+                    // Store offer data for order
+                    window.offerData = offer;
+
+                } catch (error) {
+                    showAlert(error.message || 'حدث خطأ', 'danger');
+                }
+            }
+
+            // Copy number function
+            window.copyNumber = function() {
+                const number = document.getElementById('paymentNumber').textContent;
+                navigator.clipboard.writeText(number).then(() => {
+                    showAlert('تم نسخ الرقم بنجاح!', 'success');
+                }).catch(() => {
+                    const input = document.createElement('input');
+                    input.value = number;
+                    document.body.appendChild(input);
+                    input.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(input);
+                    showAlert('تم نسخ الرقم بنجاح!', 'success');
+                });
+            };
+
+            // Alert function
+            const alertContainer = document.getElementById('alertContainer');
+
+            function showAlert(message, type = 'danger') {
+                alertContainer.innerHTML = `
+                    <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                        ${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `;
+                setTimeout(() => {
+                    const alert = alertContainer.querySelector('.alert');
+                    if (alert) {
+                        alert.classList.remove('show');
+                        setTimeout(() => alertContainer.innerHTML = '', 300);
+                    }
+                }, 5000);
+            }
+
+            // Load user data
+            try {
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                if (user.fullName) {
+                    document.getElementById('customerName').value = user.fullName;
+                }
+            } catch (e) {}
+
+            // Payment Form Submit
+            const paymentForm = document.getElementById('paymentForm');
+            const payBtn = document.getElementById('payBtn');
+            const referenceNumber = document.getElementById('referenceNumber');
+
+            paymentForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const customerName = document.getElementById('customerName').value.trim();
+                const customerPhone = document.getElementById('customerPhone').value.trim();
+                const deliveryAddress = document.getElementById('deliveryAddress').value.trim();
+                const ref = referenceNumber.value.trim();
+
+                if (!customerName || !customerPhone || !deliveryAddress) {
+                    showAlert('الرجاء ملء جميع الحقول', 'warning');
+                    return;
+                }
+
+                if (!ref) {
+                    showAlert('الرجاء إدخال رقم التحويل', 'warning');
+                    return;
+                }
+
+                if (!window.offerData) {
+                    showAlert('بيانات العرض غير متوفرة', 'danger');
+                    return;
+                }
+
+                payBtn.disabled = true;
+                payBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري تأكيد الدفع...';
+
+                try {
+                    const user = JSON.parse(localStorage.getItem('user') || '{}');
+                    
+                    const orderData = {
+                        orderType: 'offer',
+                        items: [
+                            { 
+                                name: window.offerData.name || 'عرض مميز', 
+                                quantity: 1, 
+                                price: window.offerData.price || 0 
+                            }
+                        ],
+                        totalAmount: window.offerData.price || 0,
+                        paymentMethod: 'orange_cash',
+                        transactionId: ref,
+                        customerName: customerName,
+                        customerEmail: user.email || '',
+                        customerPhone: customerPhone,
+                        deliveryAddress: deliveryAddress,
+                        specialInstructions: 'شراء عرض: ' + (window.offerData.name || '')
+                    };
+
+                    const response = await fetch('/api/orders', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + localStorage.getItem('token')
+                        },
+                        body: JSON.stringify(orderData)
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.error || 'فشل تأكيد الدفع');
+                    }
+
+                    showAlert('✅ تم شراء العرض بنجاح! جاري التحويل...', 'success');
+
+                    // Clear selected offer
+                    localStorage.removeItem('selectedOfferId');
+
+                    setTimeout(() => {
+                        window.location.href = '/offer';
+                    }, 2000);
+
+                } catch (error) {
+                    showAlert(error.message || 'حدث خطأ أثناء تأكيد الدفع', 'danger');
+                    payBtn.disabled = false;
+                    payBtn.innerHTML = '<i class="fas fa-check-circle"></i> تأكيد الدفع';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

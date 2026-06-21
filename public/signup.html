@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء حساب - صيدلية د/ميرنا صفوت</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="https://i.postimg.cc/KY95Xr8R/Dr-Mirna.jpg" type="image/jpeg">
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --card-bg: #ffffff;
+            --card-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            --border-color: #e0e0e0;
+            --input-bg: #ffffff;
+            --hero-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        [data-bs-theme="dark"] {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --card-bg: #24243e;
+            --card-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            --border-color: #333355;
+            --input-bg: #2d2d4e;
+            --hero-gradient: linear-gradient(135deg, #2d1b4e 0%, #1a1a3e 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--hero-gradient);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .signup-container {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--card-shadow);
+            max-width: 500px;
+            width: 100%;
+            position: relative;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            padding: 8px 12px;
+            cursor: pointer;
+            color: var(--text-primary);
+            transition: all 0.3s;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+            border-color: #667eea;
+        }
+
+        .theme-toggle .sun-icon {
+            display: inline-block;
+        }
+        .theme-toggle .moon-icon {
+            display: none;
+        }
+
+        [data-bs-theme="dark"] .theme-toggle .sun-icon {
+            display: none;
+        }
+        [data-bs-theme="dark"] .theme-toggle .moon-icon {
+            display: inline-block;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+            border: 3px solid #667eea;
+            padding: 3px;
+        }
+
+        .logo h3 {
+            color: #667eea;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .logo p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            border-radius: 10px;
+            padding: 12px 15px;
+            border: 2px solid var(--border-color);
+            background: var(--input-bg);
+            color: var(--text-primary);
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            background: var(--input-bg);
+            color: var(--text-primary);
+        }
+
+        .form-control::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .form-label {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .btn-signup {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s;
+        }
+
+        .btn-signup:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+
+        .btn-signup:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .link-text {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .link-text:hover {
+            text-decoration: underline;
+            color: #764ba2;
+        }
+
+        .alert {
+            border-radius: 10px;
+            font-size: 0.9rem;
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--text-secondary);
+            background: transparent;
+            border: none;
+            font-size: 1.1rem;
+        }
+
+        .password-toggle:hover {
+            color: #667eea;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--border-color);
+        }
+
+        .divider span {
+            background: var(--card-bg);
+            padding: 0 15px;
+            position: relative;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .back-home {
+            display: inline-block;
+            margin-top: 15px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .back-home:hover {
+            color: #667eea;
+        }
+
+        .password-strength {
+            height: 5px;
+            border-radius: 5px;
+            margin-top: 8px;
+            background: var(--border-color);
+            overflow: hidden;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            width: 0%;
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+
+        .password-strength-text {
+            font-size: 0.8rem;
+            margin-top: 5px;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 480px) {
+            .signup-container {
+                padding: 30px 20px;
+            }
+            .logo h3 {
+                font-size: 1.2rem;
+            }
+            .theme-toggle {
+                top: 10px;
+                left: 10px;
+                padding: 5px 10px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="signup-container">
+        <button class="theme-toggle" id="themeToggle" title="تغيير الوضع">
+            <span class="sun-icon"><i class="fas fa-sun"></i></span>
+            <span class="moon-icon"><i class="fas fa-moon"></i></span>
+        </button>
+
+        <div class="logo">
+            <img src="https://i.postimg.cc/KY95Xr8R/Dr-Mirna.jpg" alt="Dr. Mirna">
+            <h3>صيدلية د/ميرنا صفوت</h3>
+            <p>إنشاء حساب جديد</p>
+        </div>
+
+        <div id="alertContainer"></div>
+
+        <form id="signupForm">
+            <div class="form-group">
+                <label class="form-label">الاسم كاملاً</label>
+                <input type="text" class="form-control" id="fullName" placeholder="أدخل اسمك الكامل" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">البريد الإلكتروني</label>
+                <input type="email" class="form-control" id="email" placeholder="البريد الإلكتروني" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">كلمة المرور</label>
+                <div class="password-wrapper">
+                    <input type="password" class="form-control" id="password" placeholder="كلمة المرور" required minlength="6">
+                    <button type="button" class="password-toggle" id="togglePassword">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <div class="password-strength">
+                    <div class="password-strength-bar" id="strengthBar"></div>
+                </div>
+                <div class="password-strength-text" id="strengthText">ضعف</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">تأكيد كلمة المرور</label>
+                <div class="password-wrapper">
+                    <input type="password" class="form-control" id="confirmPassword" placeholder="كلمة المرور" required minlength="6">
+                    <button type="button" class="password-toggle" id="toggleConfirmPassword">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="termsCheck" required>
+                    <label class="form-check-label" for="termsCheck" style="color: var(--text-secondary); font-size: 0.9rem;">
+                        أوافق على <a href="/privacy-policy" class="link-text">سياسة الخصوصية</a> وشروط الاستخدام
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-signup" id="signupBtn">
+                <i class="fas fa-user-plus"></i> إنشاء حساب
+            </button>
+        </form>
+
+        <div class="divider">
+            <span>أو</span>
+        </div>
+
+        <div class="text-center">
+            <p style="color: var(--text-secondary); font-size: 0.95rem;">
+                لديك حساب بالفعل؟ <a href="/login" class="link-text">تسجيل الدخول</a>
+            </p>
+            <a href="/" class="back-home">
+                <i class="fas fa-arrow-right"></i> العودة للرئيسية
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme Toggle
+            const themeToggle = document.getElementById('themeToggle');
+            const html = document.documentElement;
+            
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            html.setAttribute('data-bs-theme', savedTheme);
+            
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = html.getAttribute('data-bs-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                html.setAttribute('data-bs-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+            });
+
+            // Toggle Password Visibility
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('password');
+            
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                this.querySelector('i').classList.toggle('fa-eye');
+                this.querySelector('i').classList.toggle('fa-eye-slash');
+            });
+
+            const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+            const confirmPasswordInput = document.getElementById('confirmPassword');
+            
+            toggleConfirmPassword.addEventListener('click', function() {
+                const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                confirmPasswordInput.setAttribute('type', type);
+                this.querySelector('i').classList.toggle('fa-eye');
+                this.querySelector('i').classList.toggle('fa-eye-slash');
+            });
+
+            // Password Strength
+            const strengthBar = document.getElementById('strengthBar');
+            const strengthText = document.getElementById('strengthText');
+
+            passwordInput.addEventListener('input', function() {
+                const password = this.value;
+                let strength = 0;
+                let message = 'ضعف';
+
+                if (password.length >= 6) strength += 1;
+                if (password.length >= 10) strength += 1;
+                if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength += 1;
+                if (/\d/.test(password)) strength += 1;
+                if (/[^a-zA-Z0-9]/.test(password)) strength += 1;
+
+                const percentage = (strength / 5) * 100;
+                strengthBar.style.width = percentage + '%';
+
+                if (strength <= 2) {
+                    strengthBar.style.background = '#dc3545';
+                    message = 'ضعيف';
+                } else if (strength <= 3) {
+                    strengthBar.style.background = '#ffc107';
+                    message = 'متوسط';
+                } else if (strength <= 4) {
+                    strengthBar.style.background = '#17a2b8';
+                    message = 'جيد';
+                } else {
+                    strengthBar.style.background = '#28a745';
+                    message = 'قوي جداً';
+                }
+
+                strengthText.textContent = 'قوة كلمة المرور: ' + message;
+                strengthText.style.color = strengthBar.style.background;
+            });
+
+            // Signup Form Submit
+            const signupForm = document.getElementById('signupForm');
+            const signupBtn = document.getElementById('signupBtn');
+            const alertContainer = document.getElementById('alertContainer');
+
+            function showAlert(message, type = 'danger') {
+                alertContainer.innerHTML = `
+                    <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                        ${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `;
+                setTimeout(() => {
+                    const alert = alertContainer.querySelector('.alert');
+                    if (alert) {
+                        alert.classList.remove('show');
+                        setTimeout(() => alertContainer.innerHTML = '', 300);
+                    }
+                }, 5000);
+            }
+
+            signupForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const fullName = document.getElementById('fullName').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                const termsCheck = document.getElementById('termsCheck').checked;
+
+                // Validation
+                if (!fullName || !email || !password || !confirmPassword) {
+                    showAlert('الرجاء ملء جميع الحقول', 'warning');
+                    return;
+                }
+
+                if (fullName.length < 3) {
+                    showAlert('الاسم يجب أن يكون 3 أحرف على الأقل', 'warning');
+                    return;
+                }
+
+                if (password !== confirmPassword) {
+                    showAlert('كلمة المرور وتأكيدها غير متطابقين', 'danger');
+                    return;
+                }
+
+                if (password.length < 6) {
+                    showAlert('كلمة المرور يجب أن تكون 6 أحرف على الأقل', 'warning');
+                    return;
+                }
+
+                if (!termsCheck) {
+                    showAlert('يرجى الموافقة على سياسة الخصوصية وشروط الاستخدام', 'warning');
+                    return;
+                }
+
+                signupBtn.disabled = true;
+                signupBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري إنشاء الحساب...';
+
+                try {
+                    const response = await fetch('/api/auth/signup', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ fullName, email, password, confirmPassword })
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.error || 'فشل إنشاء الحساب');
+                    }
+
+                    showAlert('تم إنشاء الحساب بنجاح! جاري التحويل إلى تسجيل الدخول...', 'success');
+
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 2000);
+
+                } catch (error) {
+                    showAlert(error.message || 'حدث خطأ أثناء إنشاء الحساب', 'danger');
+                    signupBtn.disabled = false;
+                    signupBtn.innerHTML = '<i class="fas fa-user-plus"></i> إنشاء حساب';
+                }
+            });
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

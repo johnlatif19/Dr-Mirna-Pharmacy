@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>العروض - صيدلية د/ميرنا صفوت</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="https://i.postimg.cc/KY95Xr8R/Dr-Mirna.jpg" type="image/jpeg">
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --card-bg: #ffffff;
+            --card-shadow: 0 5px 30px rgba(0,0,0,0.08);
+            --border-color: #f0f0f0;
+            --navbar-bg: rgba(255, 255, 255, 0.95);
+            --hero-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --footer-bg: #1a1a2e;
+            --footer-text: rgba(255,255,255,0.7);
+        }
+
+        [data-bs-theme="dark"] {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --card-bg: #24243e;
+            --card-shadow: 0 5px 30px rgba(0,0,0,0.3);
+            --border-color: #333355;
+            --navbar-bg: rgba(26, 26, 46, 0.95);
+            --hero-gradient: linear-gradient(135deg, #2d1b4e 0%, #1a1a3e 100%);
+            --footer-bg: #0d0d1a;
+            --footer-text: rgba(255,255,255,0.6);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar-custom {
+            background: var(--navbar-bg);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .navbar-brand img {
+            height: 50px;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+
+        .navbar-brand span {
+            color: #667eea;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .nav-link {
+            color: var(--text-primary) !important;
+            font-weight: 500;
+            transition: all 0.3s;
+            margin: 0 5px;
+        }
+
+        .nav-link:hover {
+            color: #667eea !important;
+            transform: translateY(-2px);
+        }
+
+        .btn-login-nav {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white !important;
+            border-radius: 25px;
+            padding: 8px 25px !important;
+            transition: all 0.3s;
+        }
+
+        .btn-login-nav:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            color: white !important;
+        }
+
+        .theme-toggle {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            padding: 8px 12px;
+            cursor: pointer;
+            color: var(--text-primary);
+            transition: all 0.3s;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+            border-color: #667eea;
+        }
+
+        .theme-toggle .sun-icon {
+            display: inline-block;
+        }
+        .theme-toggle .moon-icon {
+            display: none;
+        }
+
+        [data-bs-theme="dark"] .theme-toggle .sun-icon {
+            display: none;
+        }
+        [data-bs-theme="dark"] .theme-toggle .moon-icon {
+            display: inline-block;
+        }
+
+        .offers-section {
+            padding: 60px 0;
+            flex: 1;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .section-title span {
+            color: #667eea;
+        }
+
+        .offer-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+            height: 100%;
+        }
+
+        .offer-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 50px rgba(102, 126, 234, 0.15);
+        }
+
+        .offer-card .offer-image {
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: white;
+            position: relative;
+        }
+
+        .offer-card .offer-image .discount-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: #dc3545;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .offer-card .offer-body {
+            padding: 20px;
+        }
+
+        .offer-card .offer-body h5 {
+            color: var(--text-primary);
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .offer-card .offer-body p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .offer-card .offer-body .price {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .offer-card .offer-body .price .old-price {
+            color: #999;
+            text-decoration: line-through;
+            font-size: 0.9rem;
+        }
+
+        .offer-card .offer-body .price .new-price {
+            color: #28a745;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .offer-card .offer-body .btn-buy {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 10px 30px;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s;
+        }
+
+        .offer-card .offer-body .btn-buy:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(40, 167, 69, 0.4);
+            color: white;
+        }
+
+        .offer-card .offer-body .btn-buy:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .offer-card .offer-body .offer-features {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0;
+        }
+
+        .offer-card .offer-body .offer-features li {
+            padding: 5px 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .offer-card .offer-body .offer-features li i {
+            color: #28a745;
+            margin-left: 8px;
+        }
+
+        .footer {
+            background: var(--footer-bg);
+            color: white;
+            padding: 40px 0 20px;
+        }
+
+        .footer a {
+            color: var(--footer-text);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .footer a:hover {
+            color: white;
+        }
+
+        .footer h5 {
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .footer .social-icons a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            margin: 0 5px;
+            transition: all 0.3s;
+            color: white;
+        }
+
+        .footer .social-icons a:hover {
+            background: #667eea;
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 20px;
+            margin-top: 30px;
+            text-align: center;
+            color: var(--footer-text);
+            font-size: 0.9rem;
+        }
+
+        .no-offers {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+
+        .no-offers i {
+            font-size: 4rem;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .navbar-brand span {
+                font-size: 1rem;
+            }
+            .offers-section {
+                padding: 30px 0;
+            }
+            .offer-card .offer-image {
+                height: 150px;
+                font-size: 3rem;
+            }
+        }
+
+        .loading-spinner {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .loading-spinner .spinner-border {
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <img src="https://i.postimg.cc/KY95Xr8R/Dr-Mirna.jpg" alt="Dr. Mirna">
+                <span>صيدلية د/ميرنا صفوت</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">الرئيسية</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/offer">العروض</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/package">الباقات</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/privacy-policy">سياسة الخصوصية</a>
+                    </li>
+                    <li class="nav-item">
+                        <button class="theme-toggle" id="themeToggle" title="تغيير الوضع">
+                            <span class="sun-icon"><i class="fas fa-sun"></i></span>
+                            <span class="moon-icon"><i class="fas fa-moon"></i></span>
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn-login-nav" href="/login">
+                            <i class="fas fa-user"></i> تسجيل الدخول
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="offers-section">
+        <div class="container">
+            <h2 class="section-title">عروضنا <span>الحصرية</span></h2>
+            <div id="offersContainer">
+                <div class="loading-spinner">
+                    <div class="spinner-border" role="status"></div>
+                    <p class="mt-2">جاري تحميل العروض...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <h5>صيدلية د/ميرنا صفوت</h5>
+                    <p style="color: var(--footer-text);">
+                        نقدم أفضل الخدمات الصيدلانية بأحدث التقنيات 
+                        وبإشراف د/ميرنا صفوت
+                    </p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#"><i class="fab fa-telegram"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <h5>روابط سريعة</h5>
+                    <div class="d-flex flex-column">
+                        <a href="/">الرئيسية</a>
+                        <a href="/offer">العروض</a>
+                        <a href="/package">الباقات</a>
+                        <a href="/privacy-policy">سياسة الخصوصية</a>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <h5>معلومات الاتصال</h5>
+                    <div class="d-flex flex-column" style="color: var(--footer-text);">
+                        <span><i class="fas fa-phone"></i> +20 123 456 7890</span>
+                        <span><i class="fas fa-envelope"></i> info@pharmacy.com</span>
+                        <span><i class="fas fa-map-marker-alt"></i> القاهرة، مصر</span>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <h5>ساعات العمل</h5>
+                    <div style="color: var(--footer-text);">
+                        <p>السبت - الخميس: 9 ص - 10 م</p>
+                        <p>الجمعة: 2 م - 10 م</p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 صيدلية د/ميرنا صفوت. جميع الحقوق محفوظة</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme Toggle
+            const themeToggle = document.getElementById('themeToggle');
+            const html = document.documentElement;
+            
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            html.setAttribute('data-bs-theme', savedTheme);
+            
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = html.getAttribute('data-bs-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                html.setAttribute('data-bs-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+            });
+
+            // Load Offers
+            loadOffers();
+
+            async function loadOffers() {
+                const container = document.getElementById('offersContainer');
+
+                try {
+                    const response = await fetch('/api/offers', {
+                        headers: {
+                            'Authorization': 'Bearer ' + localStorage.getItem('token')
+                        }
+                    });
+
+                    if (response.status === 401) {
+                        container.innerHTML = `
+                            <div class="no-offers">
+                                <i class="fas fa-lock"></i>
+                                <h4>يجب تسجيل الدخول أولاً</h4>
+                                <a href="/login" class="btn btn-primary">تسجيل الدخول</a>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    const offers = await response.json();
+
+                    if (offers.length === 0) {
+                        container.innerHTML = `
+                            <div class="no-offers">
+                                <i class="fas fa-tags"></i>
+                                <h4>لا توجد عروض حالياً</h4>
+                                <p>سيتم إضافة عروض جديدة قريباً</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    container.innerHTML = `
+                        <div class="row g-4">
+                            ${offers.map(offer => `
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="offer-card">
+                                        <div class="offer-image">
+                                            <i class="${offer.icon || 'fas fa-gift'}"></i>
+                                            ${offer.discount ? `<span class="discount-badge">${offer.discount}% خصم</span>` : ''}
+                                        </div>
+                                        <div class="offer-body">
+                                            <h5>${offer.name}</h5>
+                                            <p>${offer.description || 'عرض مميز لفترة محدودة'}</p>
+                                            <ul class="offer-features">
+                                                ${offer.features ? offer.features.map(f => `<li><i class="fas fa-check-circle"></i> ${f}</li>`).join('') : ''}
+                                            </ul>
+                                            <div class="price">
+                                                ${offer.oldPrice ? `<span class="old-price">${offer.oldPrice} جنيه</span>` : ''}
+                                                <span class="new-price">${offer.price} جنيه</span>
+                                            </div>
+                                            <button class="btn btn-buy" onclick="buyOffer('${offer.id}')">
+                                                <i class="fas fa-shopping-cart"></i> شراء العرض
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+
+                } catch (error) {
+                    console.error('Error loading offers:', error);
+                    container.innerHTML = `
+                        <div class="no-offers">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <h4>حدث خطأ</h4>
+                            <p>${error.message || 'لم نتمكن من تحميل العروض'}</p>
+                        </div>
+                    `;
+                }
+            }
+
+            // Buy Offer Function
+            window.buyOffer = function(offerId) {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    window.location.href = '/login';
+                    return;
+                }
+
+                // Save selected offer to localStorage
+                localStorage.setItem('selectedOfferId', offerId);
+                // Navigate to payment
+                window.location.href = '/pay-offer';
+            };
+        });
+    </script>
+</body>
+</html>

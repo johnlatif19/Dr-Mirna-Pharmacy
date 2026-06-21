@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صيدلية د/ميرنا صفوت - الرئيسية</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="https://i.postimg.cc/KY95Xr8R/Dr-Mirna.jpg" type="image/jpeg">
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --card-bg: #ffffff;
+            --card-shadow: 0 5px 30px rgba(0,0,0,0.08);
+            --border-color: #f0f0f0;
+            --navbar-bg: rgba(255, 255, 255, 0.95);
+            --hero-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --footer-bg: #1a1a2e;
+            --footer-text: rgba(255,255,255,0.7);
+        }
+
+        [data-bs-theme="dark"] {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --card-bg: #24243e;
+            --card-shadow: 0 5px 30px rgba(0,0,0,0.3);
+            --border-color: #333355;
+            --navbar-bg: rgba(26, 26, 46, 0.95);
+            --hero-gradient: linear-gradient(135deg, #4a4a8a 0%, #5a3a7a 100%);
+            --footer-bg: #0d0d1a;
+            --footer-text: rgba(255,255,255,0.6);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar */
+        .navbar-custom {
+            background: var(--navbar-bg);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .navbar-brand img {
+            height: 50px;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+
+        .navbar-brand span {
+            color: #667eea;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .nav-link {
+            color: var(--text-primary) !important;
+            font-weight: 500;
+            transition: all 0.3s;
+            margin: 0 5px;
+        }
+
+        .nav-link:hover {
+            color: #667eea !important;
+            transform: translateY(-2px);
+        }
+
+        .btn-login-nav {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white !important;
+            border-radius: 25px;
+            padding: 8px 25px !important;
+            transition: all 0.3s;
+        }
+
+        .btn-login-nav:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            padding: 8px 12px;
+            cursor: pointer;
+            color: var(--text-primary);
+            transition: all 0.3s;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+            border-color: #667eea;
+        }
+
+        .theme-toggle .sun-icon {
+            display: inline-block;
+        }
+
+        .theme-toggle .moon-icon {
+            display: none;
+        }
+
+        [data-bs-theme="dark"] .theme-toggle .sun-icon {
+            display: none;
+        }
+
+        [data-bs-theme="dark"] .theme-toggle .moon-icon {
+            display: inline-block;
+        }
+
+    :root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --card-bg: #ffffff;
+    --card-shadow: 0 5px 30px rgba(0,0,0,0.08);
+    --border-color: #f0f0f0;
+    --navbar-bg: rgba(255, 255, 255, 0.95);
+    --hero-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --footer-bg: #1a1a2e;
+    --footer-text: rgba(255,255,255,0.7);
+    }
+
+    [data-bs-theme="dark"] {
+    --bg-primary: #1a1a2e;
+    --bg-secondary: #16213e;
+    --text-primary: #ffffff;
+    --text-secondary: #b0b0b0;
+    --card-bg: #24243e;
+    --card-shadow: 0 5px 30px rgba(0,0,0,0.3);
+    --border-color: #333355;
+    --navbar-bg: rgba(26, 26, 46, 0.95);
+    --hero-gradient: linear-gradient(135deg, #2d1b4e 0%, #1a1a3e 100%);
+    --footer-bg: #0d0d1a;
+    --footer-text: rgba(255,255,255,0.6);
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+
+        .hero-buttons .btn {
+            padding: 12px 35px;
+            border-radius: 30px;
+            font-weight: 600;
+            margin: 5px 10px 5px 0;
+            transition: all 0.3s;
+        }
+
+        .btn-hero-primary {
+            background: white;
+            color: #667eea;
+            border: none;
+        }
+
+        .btn-hero-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            color: #667eea;
+        }
+
+        .btn-hero-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-hero-secondary:hover {
+            background: white;
+            color: #667eea;
+            transform: translateY(-3px);
+        }
+
+        .hero-image {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Features */
+        .features-section {
+            padding: 80px 0;
+            background: var(--bg-secondary);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .section-title span {
+            color: #667eea;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
+            text-align: center;
+            transition: all 0.3s;
+            height: 100%;
+            border: 1px solid var(--border-color);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 50px rgba(102, 126, 234, 0.15);
+            border-color: #667eea;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h4 {
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--footer-bg);
+            color: white;
+            padding: 40px 0 20px;
+        }
+
+        .footer a {
+            color: var(--footer-text);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .footer a:hover {
+            color: white;
+        }
+
+        .footer h5 {
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .footer .social-icons a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            margin: 0 5px;
+            transition: all 0.3s;
+            color: white;
+        }
+
+        .footer .social-icons a:hover {
+            background: #667eea;
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 20px;
+            margin-top: 30px;
+            text-align: center;
+            color: var(--footer-text);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.2rem;
+            }
+            .hero-section {
+                text-align: center;
+                padding: 30px 0;
+            }
+            .hero-buttons .btn {
+                margin: 5px;
+            }
+            .navbar-brand span {
+                font-size: 1rem;
+            }
+        }
+        .contact-info a{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    text-decoration:none;
+    color:#333;
+    margin:10px 0;
+}
+
+.contact-info i{
+    width:25px;
+    font-size:18px;
+}
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <img src="https://i.postimg.cc/KY95Xr8R/Dr-Mirna.jpg" alt="Dr. Mirna">
+                <span>صيدلية د/ميرنا صفوت</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">الرئيسية</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/offer">العروض</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/package">الباقات</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/privacy-policy">سياسة الخصوصية</a>
+                    </li>
+                    <li class="nav-item">
+                        <button class="theme-toggle" id="themeToggle" title="تغيير الوضع">
+                            <span class="sun-icon"><i class="fas fa-sun"></i></span>
+                            <span class="moon-icon"><i class="fas fa-moon"></i></span>
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn-login-nav" href="/login">
+                            <i class="fas fa-user"></i> تسجيل الدخول
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="hero-title">صيدليتك المتكاملة</h1>
+                    <p class="hero-subtitle">
+                        نقدم لك أفضل الخدمات الصيدلانية مع أحدث التقنيات. 
+                        احصل على أدويتك بسهولة، واستفد من العروض والباقات المميزة.
+                    </p>
+                    <div class="hero-buttons">
+                        <a href="/signup" class="btn btn-hero-primary">
+                            <i class="fas fa-user-plus"></i> إنشاء حساب
+                        </a>
+                        <a href="/login" class="btn btn-hero-secondary">
+                            <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-center">
+                    <img src="https://i.postimg.cc/KY95Xr8R/Dr-Mirna.jpg" alt="Pharmacy" class="hero-image img-fluid" style="max-width: 400px; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <h2 class="section-title">خدماتنا <span>المميزة</span></h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-pills"></i>
+                        </div>
+                        <h4>الأدوية</h4>
+                        <p>تشكيلة واسعة من الأدوية الأصلية بأسعار تنافسية، مع إمكانية البحث والطلب بسهولة</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-tags"></i>
+                        </div>
+                        <h4>العروض الخاصة</h4>
+                        <p>استفد من العروض الحصرية والتخفيضات المميزة على مجموعة متنوعة من المنتجات</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-boxes"></i>
+                        </div>
+                        <h4>باقات متكاملة</h4>
+                        <p>باقات علاجية متكاملة تشمل الأدوية والمكملات الغذائية بأسعار مخفضة</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h4>مساعد ذكي</h4>
+                        <p>دردشة ذكية تساعدك في البحث عن الأدوية والاستفسار عن التوفر</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h4>تحليلات فورية</h4>
+                        <p>تقارير وتحليلات لحالة الطلبات والمبيعات والإحصائيات</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h4>أمان وخصوصية</h4>
+                        <p>نظام آمن يحمي بياناتك وخصوصيتك مع تشفير متقدم</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <h5>صيدلية د/ميرنا صفوت</h5>
+                    <p style="color: var(--footer-text);">
+                        نقدم أفضل الخدمات الصيدلانية بأحدث التقنيات 
+                        وبإشراف د/ميرنا صفوت
+                    </p>
+                    <div class="social-icons">
+                        <a href="https://wa.me/201208881905"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <h5>روابط سريعة</h5>
+                    <div class="d-flex flex-column">
+                        <a href="/">الرئيسية</a>
+                        <a href="/offer">العروض</a>
+                        <a href="/package">الباقات</a>
+                        <a href="/privacy-policy">سياسة الخصوصية</a>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <h5>معلومات الاتصال</h5>
+                    <div class="contact-info">
+                        <a href="tel:+201208881905"><i class="fas fa-phone"></i><span>01208881905</span></a>
+                        <a href="https://wa.me/201208881905" target="_blank"><i class="fab fa-whatsapp"></i><span>واتساب</span></a>
+                        <a href="https://maps.google.com/?q=30.0444,31.2357" target="_blank"><i class="fas fa-map-marker-alt"></i><span>13 شارع احمد محمود عمرو متفرع من الصفا والمروة بخلف بنزينة غازتك - الطوابق  فيصل</span></a>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <h5>ساعات العمل</h5>
+                    <div style="color: var(--footer-text);">
+                        <p>24 ساعة على مدار اليوم</p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 صيدلية د/ميرنا صفوت. جميع الحقوق محفوظة</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Theme Toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('themeToggle');
+            const html = document.documentElement;
+            
+            // Check saved theme
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            html.setAttribute('data-bs-theme', savedTheme);
+            
+            // Toggle theme
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = html.getAttribute('data-bs-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                html.setAttribute('data-bs-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+            });
+
+            // Animate features on scroll
+            const cards = document.querySelectorAll('.feature-card');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            });
+            cards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = 'all 0.6s ease';
+                observer.observe(card);
+            });
+        });
+    </script>
+</body>
+</html>

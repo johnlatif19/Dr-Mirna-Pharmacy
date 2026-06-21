@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سياسة الخصوصية - صيدلية د/ميرنا صفوت</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="https://i.postimg.cc/KY95Xr8R/Dr-Mirna.jpg" type="image/jpeg">
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --card-bg: #ffffff;
+            --card-shadow: 0 5px 30px rgba(0,0,0,0.08);
+            --border-color: #f0f0f0;
+            --navbar-bg: rgba(255, 255, 255, 0.95);
+            --hero-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --footer-bg: #1a1a2e;
+            --footer-text: rgba(255,255,255,0.7);
+        }
+
+        [data-bs-theme="dark"] {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --card-bg: #24243e;
+            --card-shadow: 0 5px 30px rgba(0,0,0,0.3);
+            --border-color: #333355;
+            --navbar-bg: rgba(26, 26, 46, 0.95);
+            --hero-gradient: linear-gradient(135deg, #2d1b4e 0%, #1a1a3e 100%);
+            --footer-bg: #0d0d1a;
+            --footer-text: rgba(255,255,255,0.6);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar-custom {
+            background: var(--navbar-bg);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .navbar-brand img {
+            height: 50px;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+
+        .navbar-brand span {
+            color: #667eea;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .nav-link {
+            color: var(--text-primary) !important;
+            font-weight: 500;
+            transition: all 0.3s;
+            margin: 0 5px;
+        }
+
+        .nav-link:hover {
+            color: #667eea !important;
+            transform: translateY(-2px);
+        }
+
+        .btn-login-nav {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white !important;
+            border-radius: 25px;
+            padding: 8px 25px !important;
+            transition: all 0.3s;
+        }
+
+        .btn-login-nav:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .theme-toggle {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            padding: 8px 12px;
+            cursor: pointer;
+            color: var(--text-primary);
+            transition: all 0.3s;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+            border-color: #667eea;
+        }
+
+        .theme-toggle .sun-icon {
+            display: inline-block;
+        }
+        .theme-toggle .moon-icon {
+            display: none;
+        }
+
+        [data-bs-theme="dark"] .theme-toggle .sun-icon {
+            display: none;
+        }
+        [data-bs-theme="dark"] .theme-toggle .moon-icon {
+            display: inline-block;
+        }
+
+        .privacy-section {
+            padding: 60px 0;
+            flex: 1;
+        }
+
+        .privacy-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .privacy-card h1 {
+            color: #667eea;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .privacy-card .last-updated {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 30px;
+        }
+
+        .privacy-card h4 {
+            color: var(--text-primary);
+            font-weight: 700;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        .privacy-card h4 i {
+            color: #667eea;
+            margin-left: 10px;
+        }
+
+        .privacy-card p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        .privacy-card ul {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            padding-right: 20px;
+        }
+
+        .privacy-card ul li {
+            margin-bottom: 8px;
+        }
+
+        .footer {
+            background: var(--footer-bg);
+            color: white;
+            padding: 40px 0 20px;
+        }
+
+        .footer a {
+            color: var(--footer-text);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .footer a:hover {
+            color: white;
+        }
+
+        .footer h5 {
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .footer .social-icons a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            margin: 0 5px;
+            transition: all 0.3s;
+            color: white;
+        }
+
+        .footer .social-icons a:hover {
+            background: #667eea;
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 20px;
+            margin-top: 30px;
+            text-align: center;
+            color: var(--footer-text);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .privacy-card {
+                padding: 25px 20px;
+            }
+            .privacy-card h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <img src="https://i.postimg.cc/KY95Xr8R/Dr-Mirna.jpg" alt="Dr. Mirna">
+                <span>صيدلية د/ميرنا صفوت</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">الرئيسية</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/offer">العروض</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/package">الباقات</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/privacy-policy">سياسة الخصوصية</a>
+                    </li>
+                    <li class="nav-item">
+                        <button class="theme-toggle" id="themeToggle" title="تغيير الوضع">
+                            <span class="sun-icon"><i class="fas fa-sun"></i></span>
+                            <span class="moon-icon"><i class="fas fa-moon"></i></span>
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn-login-nav" href="/login">
+                            <i class="fas fa-user"></i> تسجيل الدخول
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="privacy-section">
+        <div class="container">
+            <div class="privacy-card">
+                <h1>سياسة الخصوصية</h1>
+                <div class="last-updated">آخر تحديث: 1 يناير 2026</div>
+
+                <p>
+                    في صيدلية د/ميرنا صفوت، نولي خصوصية بياناتك أهمية قصوى. توضح سياسة الخصوصية هذه 
+                    كيفية جمع واستخدام وحماية معلوماتك الشخصية عند استخدامك لموقعنا الإلكتروني وخدماتنا.
+                </p>
+
+                <h4><i class="fas fa-database"></i> المعلومات التي نجمعها</h4>
+                <p>نجمع المعلومات التالية:</p>
+                <ul>
+                    <li><strong>المعلومات الشخصية:</strong> الاسم، البريد الإلكتروني، رقم الهاتف، عنوان التوصيل</li>
+                    <li><strong>معلومات الحساب:</strong> اسم المستخدم، كلمة المرور المشفرة</li>
+                    <li><strong>معلومات الطلبات:</strong> الأدوية المطلوبة، العروض، الباقات، طرق الدفع</li>
+                </ul>
+
+                <h4><i class="fas fa-cogs"></i> كيفية استخدام معلوماتك</h4>
+                <ul>
+                    <li>تقديم خدماتنا الصيدلانية وإدارة طلباتك</li>
+                    <li>تحسين تجربة المستخدم وتطوير الموقع</li>
+                    <li>إرسال إشعارات حول طلباتك وعروضنا</li>
+                    <li>التواصل معك بخصوص استفساراتك أو مشاكل الدفع</li>
+                    <li>تحليل البيانات الإحصائية لتحسين خدماتنا</li>
+                </ul>
+
+                <h4><i class="fas fa-cookie"></i> ملفات تعريف الارتباط (Cookies)</h4>
+                <p>
+                    نستخدم ملفات تعريف الارتباط لتحسين تجربتك على موقعنا، بما في ذلك:
+                </p>
+                <ul>
+                    <li>تذكر تفضيلاتك وإعداداتك</li>
+                </ul>
+
+                <h4><i class="fas fa-share-alt"></i> مشاركة المعلومات</h4>
+                <p>
+                    لا نشارك معلوماتك الشخصية مع أطراف ثالثة إلا في الحالات التالية:
+                </p>
+                <ul>
+                    <li>عندما يتطلب القانون ذلك</li>
+                </ul>
+
+                <h4><i class="fas fa-user-cog"></i> حقوقك</h4>
+                <p>لديك الحق في:</p>
+                <ul>
+                    <li>الوصول إلى بياناتك الشخصية</li>
+                    <li>تصحيح أو تحديث معلوماتك</li>
+                    <li>طلب حذف بياناتك</li>
+                    <li>إلغاء الاشتراك في الرسائل التسويقية</li>
+                </ul>
+
+                <h4><i class="fas fa-envelope"></i> التواصل معنا</h4>
+                <p>
+                    إذا كان لديك أي استفسار حول سياسة الخصوصية، يمكنك التواصل معنا عبر:
+                </p>
+                <ul>
+                    <li><strong>الهاتف:</strong>201208881905</li>
+                    <li><strong>العنوان:</strong>شارع احمد محمود عمرو متفرع من الصفا والمروة بخلف بنزينة غازتك - الطوابق فيصل</li>
+                </ul>
+
+                <h4><i class="fas fa-history"></i> التحديثات</h4>
+                <p>
+                    قد نقوم بتحديث سياسة الخصوصية من وقت لآخر. سيتم إعلامك بأي تغييرات جوهرية 
+                    عبر البريد الإلكتروني أو من خلال إشعار على موقعنا.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <h5>صيدلية د/ميرنا صفوت</h5>
+                    <p style="color: var(--footer-text);">
+                        نقدم أفضل الخدمات الصيدلانية بأحدث التقنيات 
+                        وبإشراف د/ميرنا صفوت
+                    </p>
+                    <div class="social-icons">
+                        <a href="https://wa.me/201208881905"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <h5>روابط سريعة</h5>
+                    <div class="d-flex flex-column">
+                        <a href="/">الرئيسية</a>
+                        <a href="/offer">العروض</a>
+                        <a href="/package">الباقات</a>
+                        <a href="/privacy-policy">سياسة الخصوصية</a>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <h5>معلومات الاتصال</h5>
+                    <div class="d-flex flex-column" style="color: var(--footer-text);">
+                        <span><i class="fas fa-phone"></i> +201208881905</span>
+                        <span><i class="fas fa-map-marker-alt"></i>13 شارع احمد محمود عمرو متفرع من الصفا والمروة بخلف بنزينة غازتك - الطوابق فيصل</span>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <h5>ساعات العمل</h5>
+                    <div style="color: var(--footer-text);">
+                        <p>24 ساعة على مدار اليوم</p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 صيدلية د/ميرنا صفوت. جميع الحقوق محفوظة</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('themeToggle');
+            const html = document.documentElement;
+            
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            html.setAttribute('data-bs-theme', savedTheme);
+            
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = html.getAttribute('data-bs-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                html.setAttribute('data-bs-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+            });
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

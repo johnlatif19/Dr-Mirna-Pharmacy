@@ -1,0 +1,1708 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - صيدلية د/ميرنا صفوت</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.css">
+    <link rel="icon" href="https://i.postimg.cc/KY95Xr8R/Dr-Mirna.jpg" type="image/jpeg">
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --card-bg: #ffffff;
+            --card-shadow: 0 5px 30px rgba(0,0,0,0.08);
+            --border-color: #f0f0f0;
+            --navbar-bg: rgba(255, 255, 255, 0.95);
+            --sidebar-bg: #1a1a2e;
+            --sidebar-text: rgba(255,255,255,0.7);
+            --sidebar-hover: #667eea;
+        }
+
+        [data-bs-theme="dark"] {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --card-bg: #24243e;
+            --card-shadow: 0 5px 30px rgba(0,0,0,0.3);
+            --border-color: #333355;
+            --navbar-bg: rgba(26, 26, 46, 0.95);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar-custom {
+            background: var(--navbar-bg);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand img {
+            height: 40px;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+
+        .navbar-brand span {
+            color: #667eea;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .theme-toggle {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            padding: 6px 10px;
+            cursor: pointer;
+            color: var(--text-primary);
+            transition: all 0.3s;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+            border-color: #667eea;
+        }
+
+        .theme-toggle .sun-icon {
+            display: inline-block;
+        }
+        .theme-toggle .moon-icon {
+            display: none;
+        }
+
+        [data-bs-theme="dark"] .theme-toggle .sun-icon {
+            display: none;
+        }
+        [data-bs-theme="dark"] .theme-toggle .moon-icon {
+            display: inline-block;
+        }
+
+        .user-name {
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .user-name i {
+            color: #667eea;
+            margin-left: 5px;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 5px 15px;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #c82333;
+            transform: scale(1.05);
+            color: white;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 60px;
+            right: 0;
+            width: 250px;
+            height: calc(100vh - 60px);
+            background: var(--sidebar-bg);
+            padding: 20px 0;
+            overflow-y: auto;
+            z-index: 999;
+            transition: all 0.3s;
+        }
+
+        .sidebar .nav-link {
+            color: var(--sidebar-text);
+            padding: 12px 25px;
+            border-radius: 0;
+            transition: all 0.3s;
+            margin: 2px 0;
+            border-right: 3px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar .nav-link:hover {
+            background: rgba(102, 126, 234, 0.1);
+            color: white;
+            border-right-color: #667eea;
+        }
+
+        .sidebar .nav-link.active {
+            background: rgba(102, 126, 234, 0.15);
+            color: white;
+            border-right-color: #667eea;
+        }
+
+        .sidebar .nav-link i {
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .sidebar .nav-link .badge {
+            margin-right: auto;
+            background: #dc3545;
+        }
+
+        .sidebar .nav-header {
+            color: rgba(255,255,255,0.3);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            padding: 10px 25px;
+            letter-spacing: 1px;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-right: 250px;
+            margin-top: 60px;
+            padding: 20px;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* Cards */
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .stat-card .icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-card .icon.blue {
+            background: rgba(102, 126, 234, 0.15);
+            color: #667eea;
+        }
+        .stat-card .icon.green {
+            background: rgba(40, 167, 69, 0.15);
+            color: #28a745;
+        }
+        .stat-card .icon.yellow {
+            background: rgba(255, 193, 7, 0.15);
+            color: #ffc107;
+        }
+        .stat-card .icon.red {
+            background: rgba(220, 53, 69, 0.15);
+            color: #dc3545;
+        }
+        .stat-card .icon.purple {
+            background: rgba(102, 51, 153, 0.15);
+            color: #663399;
+        }
+        .stat-card .icon.orange {
+            background: rgba(255, 107, 0, 0.15);
+            color: #ff6b00;
+        }
+
+        .stat-card .number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .stat-card .label {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        /* Section Cards */
+        .section-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .section-card .card-header {
+            background: transparent;
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 0 15px 0;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .section-card .card-header i {
+            color: #667eea;
+            margin-left: 8px;
+        }
+
+        /* Table */
+        .table {
+            color: var(--text-primary);
+        }
+
+        .table thead th {
+            border-bottom: 2px solid var(--border-color);
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .table td {
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        .badge-status {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+        }
+
+        .badge-status.pending {
+            background: rgba(255, 193, 7, 0.15);
+            color: #ffc107;
+        }
+        .badge-status.approved {
+            background: rgba(40, 167, 69, 0.15);
+            color: #28a745;
+        }
+        .badge-status.rejected {
+            background: rgba(220, 53, 69, 0.15);
+            color: #dc3545;
+        }
+
+        /* Modal */
+        .modal-content {
+            background: var(--card-bg);
+            color: var(--text-primary);
+        }
+
+        .modal-header {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-footer {
+            border-top: 1px solid var(--border-color);
+        }
+
+        .form-control, .form-select {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .form-control:focus, .form-select:focus {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                right: -250px;
+            }
+            .sidebar.active {
+                right: 0;
+            }
+            .main-content {
+                margin-right: 0;
+            }
+            .navbar-toggler {
+                display: block !important;
+            }
+            .stat-card .number {
+                font-size: 1.5rem;
+            }
+        }
+
+        .navbar-toggler {
+            display: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .navbar-toggler:focus {
+            box-shadow: none;
+        }
+
+        /* Chat */
+        .chat-messages {
+            height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+        }
+
+        .chat-message {
+            margin-bottom: 10px;
+            padding: 10px 15px;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+
+        .chat-message.user {
+            background: #667eea;
+            color: white;
+            margin-right: auto;
+        }
+
+        .chat-message.bot {
+            background: var(--border-color);
+            color: var(--text-primary);
+            margin-left: auto;
+        }
+
+        /* Loading */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loading-spinner {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .loading-spinner .spinner-border {
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <div class="spinner-border" role="status"></div>
+            <p class="mt-2">جاري التحميل...</p>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <img src="https://i.postimg.cc/KY95Xr8R/Dr-Mirna.jpg" alt="Dr. Mirna">
+                <span>صيدلية د/ميرنا صفوت</span>
+            </a>
+            <button class="navbar-toggler" type="button" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="d-flex align-items-center gap-3 me-auto">
+                <button class="theme-toggle" id="themeToggle" title="تغيير الوضع">
+                    <span class="sun-icon"><i class="fas fa-sun"></i></span>
+                    <span class="moon-icon"><i class="fas fa-moon"></i></span>
+                </button>
+                <span class="user-name">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="userName">Admin</span>
+                </span>
+                <button class="logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> خروج
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="nav-header">القائمة الرئيسية</div>
+        <a href="#" class="nav-link active" data-section="dashboard">
+            <i class="fas fa-tachometer-alt"></i> لوحة التحكم
+        </a>
+        <a href="#" class="nav-link" data-section="medicines">
+            <i class="fas fa-pills"></i> الأدوية
+        </a>
+        <a href="#" class="nav-link" data-section="orders">
+            <i class="fas fa-shopping-cart"></i> الطلبات
+            <span class="badge" id="pendingBadge">0</span>
+        </a>
+        <a href="#" class="nav-link" data-section="sales">
+            <i class="fas fa-chart-line"></i> المبيعات
+        </a>
+        <a href="#" class="nav-link" data-section="expenses">
+            <i class="fas fa-money-bill-wave"></i> المصروفات
+        </a>
+        <a href="#" class="nav-link" data-section="analytics">
+            <i class="fas fa-bar-chart"></i> التحليلات
+        </a>
+        <a href="#" class="nav-link" data-section="reports">
+            <i class="fas fa-file-alt"></i> التقارير
+        </a>
+        <a href="#" class="nav-link" data-section="email">
+            <i class="fas fa-envelope"></i> البريد الإلكتروني
+        </a>
+        <a href="#" class="nav-link" data-section="audit">
+            <i class="fas fa-history"></i> سجل التدقيق
+        </a>
+        <a href="#" class="nav-link" data-section="ai-chat">
+            <i class="fas fa-robot"></i> المساعد الذكي
+        </a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+
+        <!-- ==================== DASHBOARD SECTION ==================== -->
+        <div id="section-dashboard">
+            <div class="row g-4 mb-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-card">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="number" id="totalSales">0</div>
+                                <div class="label">إجمالي المبيعات</div>
+                            </div>
+                            <div class="icon blue"><i class="fas fa-shopping-cart"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-card">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="number" id="totalRevenue">0</div>
+                                <div class="label">إجمالي الإيرادات</div>
+                            </div>
+                            <div class="icon green"><i class="fas fa-dollar-sign"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-card">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="number" id="totalOrders">0</div>
+                                <div class="label">إجمالي الطلبات</div>
+                            </div>
+                            <div class="icon purple"><i class="fas fa-box"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-card">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="number" id="pendingOrders">0</div>
+                                <div class="label">طلبات معلقة</div>
+                            </div>
+                            <div class="icon yellow"><i class="fas fa-clock"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="section-card">
+                        <div class="card-header">
+                            <i class="fas fa-chart-area"></i> تحليل المبيعات
+                        </div>
+                        <canvas id="salesChart"></canvas>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="section-card">
+                        <div class="card-header">
+                            <i class="fas fa-pie-chart"></i> توزيع الطلبات
+                        </div>
+                        <canvas id="ordersChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== MEDICINES SECTION ==================== -->
+        <div id="section-medicines" style="display:none;">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4><i class="fas fa-pills"></i> إدارة الأدوية</h4>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMedicineModal">
+                    <i class="fas fa-plus"></i> إضافة دواء
+                </button>
+            </div>
+            <div class="section-card">
+                <div class="table-responsive">
+                    <table class="table" id="medicinesTable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>الصورة</th>
+                                <th>الاسم</th>
+                                <th>الفئة</th>
+                                <th>السعر</th>
+                                <th>المخزون</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="medicinesBody">
+                            <tr>
+                                <td colspan="7" class="text-center">جاري التحميل...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== ORDERS SECTION ==================== -->
+        <div id="section-orders" style="display:none;">
+            <h4 class="mb-4"><i class="fas fa-shopping-cart"></i> إدارة الطلبات</h4>
+            <div class="section-card">
+                <div class="table-responsive">
+                    <table class="table" id="ordersTable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>العميل</th>
+                                <th>النوع</th>
+                                <th>المبلغ</th>
+                                <th>طريقة الدفع</th>
+                                <th>الحالة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersBody">
+                            <tr>
+                                <td colspan="7" class="text-center">جاري التحميل...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SALES SECTION ==================== -->
+        <div id="section-sales" style="display:none;">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4><i class="fas fa-chart-line"></i> إدارة المبيعات</h4>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSaleModal">
+                    <i class="fas fa-plus"></i> إضافة مبيعات يدوية
+                </button>
+            </div>
+            <div class="section-card">
+                <div class="table-responsive">
+                    <table class="table" id="salesTable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>المنتج</th>
+                                <th>النوع</th>
+                                <th>الكمية</th>
+                                <th>السعر</th>
+                                <th>العميل</th>
+                                <th>التاريخ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="salesBody">
+                            <tr>
+                                <td colspan="7" class="text-center">جاري التحميل...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== EXPENSES SECTION ==================== -->
+        <div id="section-expenses" style="display:none;">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4><i class="fas fa-money-bill-wave"></i> إدارة المصروفات</h4>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addExpenseModal">
+                    <i class="fas fa-plus"></i> إضافة مصروف
+                </button>
+            </div>
+            <div class="section-card">
+                <div class="table-responsive">
+                    <table class="table" id="expensesTable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>الاسم</th>
+                                <th>المبلغ</th>
+                                <th>الملاحظات</th>
+                                <th>التاريخ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="expensesBody">
+                            <tr>
+                                <td colspan="5" class="text-center">جاري التحميل...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== ANALYTICS SECTION ==================== -->
+        <div id="section-analytics" style="display:none;">
+            <h4 class="mb-4"><i class="fas fa-bar-chart"></i> التحليلات</h4>
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="section-card">
+                        <div class="card-header">
+                            <i class="fas fa-chart-line"></i> المبيعات اليومية
+                        </div>
+                        <canvas id="dailyChart"></canvas>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="section-card">
+                        <div class="card-header">
+                            <i class="fas fa-chart-bar"></i> المبيعات الأسبوعية
+                        </div>
+                        <canvas id="weeklyChart"></canvas>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="section-card">
+                        <div class="card-header">
+                            <i class="fas fa-chart-area"></i> المبيعات الشهرية
+                        </div>
+                        <canvas id="monthlyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== REPORTS SECTION ==================== -->
+        <div id="section-reports" style="display:none;">
+            <h4 class="mb-4"><i class="fas fa-file-alt"></i> التقارير</h4>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="section-card text-center">
+                        <i class="fas fa-file-pdf" style="font-size: 3rem; color: #dc3545;"></i>
+                        <h5 class="mt-2">PDF</h5>
+                        <button class="btn btn-outline-danger mt-2" onclick="exportReport('pdf')">
+                            <i class="fas fa-download"></i> تحميل
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="section-card text-center">
+                        <i class="fas fa-file-excel" style="font-size: 3rem; color: #28a745;"></i>
+                        <h5 class="mt-2">Excel</h5>
+                        <button class="btn btn-outline-success mt-2" onclick="exportReport('excel')">
+                            <i class="fas fa-download"></i> تحميل
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="section-card text-center">
+                        <i class="fas fa-file-csv" style="font-size: 3rem; color: #17a2b8;"></i>
+                        <h5 class="mt-2">CSV</h5>
+                        <button class="btn btn-outline-info mt-2" onclick="exportReport('csv')">
+                            <i class="fas fa-download"></i> تحميل
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== EMAIL SECTION ==================== -->
+        <div id="section-email" style="display:none;">
+            <h4 class="mb-4"><i class="fas fa-envelope"></i> إرسال بريد إلكتروني</h4>
+            <div class="section-card">
+                <form id="emailForm">
+                    <div class="mb-3">
+                        <label class="form-label">إلى</label>
+                        <input type="email" class="form-control" id="emailTo" placeholder="example@email.com" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">الموضوع</label>
+                        <input type="text" class="form-control" id="emailSubject" placeholder="أدخل الموضوع" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">الرسالة</label>
+                        <textarea class="form-control" id="emailMessage" rows="5" placeholder="أدخل الرسالة" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="sendEmailBtn">
+                        <i class="fas fa-paper-plane"></i> إرسال
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- ==================== AUDIT SECTION ==================== -->
+        <div id="section-audit" style="display:none;">
+            <h4 class="mb-4"><i class="fas fa-history"></i> سجل التدقيق</h4>
+            <div class="section-card">
+                <div class="table-responsive">
+                    <table class="table" id="auditTable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>المسؤول</th>
+                                <th>الإجراء</th>
+                                <th>التاريخ</th>
+                                <th>IP</th>
+                            </tr>
+                        </thead>
+                        <tbody id="auditBody">
+                            <tr>
+                                <td colspan="5" class="text-center">جاري التحميل...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== AI CHAT SECTION ==================== -->
+        <div id="section-ai-chat" style="display:none;">
+            <h4 class="mb-4"><i class="fas fa-robot"></i> المساعد الذكي</h4>
+            <div class="section-card">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="chat-message bot">
+                        مرحباً! أنا المساعد الذكي. اسألني عن أي دواء وسأبحث لك عنه.
+                    </div>
+                </div>
+                <div class="d-flex gap-2 mt-3">
+                    <input type="text" class="form-control" id="chatInput" placeholder="اكتب اسم الدواء...">
+                    <button class="btn btn-primary" id="chatSendBtn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODALS ==================== -->
+
+    <!-- Add Medicine Modal -->
+    <div class="modal fade" id="addMedicineModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-plus"></i> إضافة دواء جديد</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addMedicineForm">
+                        <div class="mb-3">
+                            <label class="form-label">اسم الدواء</label>
+                            <input type="text" class="form-control" id="medName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">الفئة</label>
+                            <input type="text" class="form-control" id="medCategory">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">السعر</label>
+                            <input type="number" class="form-control" id="medPrice" step="0.01" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">المخزون</label>
+                            <input type="number" class="form-control" id="medStock" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">الوصف</label>
+                            <textarea class="form-control" id="medDescription"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-primary" id="saveMedicineBtn">
+                        <i class="fas fa-save"></i> حفظ
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Sale Modal -->
+    <div class="modal fade" id="addSaleModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-plus"></i> إضافة مبيعات يدوية</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addSaleForm">
+                        <div class="mb-3">
+                            <label class="form-label">اسم المنتج</label>
+                            <input type="text" class="form-control" id="saleProductName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">نوع المنتج</label>
+                            <select class="form-select" id="saleProductType">
+                                <option value="medicine">دواء</option>
+                                <option value="offer">عرض</option>
+                                <option value="package">باقة</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">الكمية</label>
+                            <input type="number" class="form-control" id="saleQuantity" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">سعر الوحدة</label>
+                            <input type="number" class="form-control" id="saleUnitPrice" step="0.01" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">اسم العميل</label>
+                            <input type="text" class="form-control" id="saleCustomer">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">ملاحظات</label>
+                            <textarea class="form-control" id="saleNotes"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-primary" id="saveSaleBtn">
+                        <i class="fas fa-save"></i> حفظ
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Expense Modal -->
+    <div class="modal fade" id="addExpenseModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-plus"></i> إضافة مصروف</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addExpenseForm">
+                        <div class="mb-3">
+                            <label class="form-label">اسم المصروف</label>
+                            <input type="text" class="form-control" id="expenseName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">المبلغ</label>
+                            <input type="number" class="form-control" id="expenseAmount" step="0.01" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">ملاحظات</label>
+                            <textarea class="form-control" id="expenseNotes"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-primary" id="saveExpenseBtn">
+                        <i class="fas fa-save"></i> حفظ
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Details Modal -->
+    <div class="modal fade" id="orderDetailsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-info-circle"></i> تفاصيل الطلب</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="orderDetailsBody">
+                    <p>جاري التحميل...</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // ============================================
+            // 1. THEME TOGGLE
+            // ============================================
+            const themeToggle = document.getElementById('themeToggle');
+            const html = document.documentElement;
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            html.setAttribute('data-bs-theme', savedTheme);
+
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = html.getAttribute('data-bs-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                html.setAttribute('data-bs-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+            });
+
+            // ============================================
+            // 2. AUTH CHECK
+            // ============================================
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+            if (!token || user.role !== 'admin') {
+                window.location.href = '/login-dashboard';
+                return;
+            }
+
+            document.getElementById('userName').textContent = user.fullName || 'Admin';
+
+            // ============================================
+            // 3. LOGOUT
+            // ============================================
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '/login-dashboard';
+            });
+
+            // ============================================
+            // 4. SIDEBAR
+            // ============================================
+            const sidebar = document.getElementById('sidebar');
+            document.getElementById('sidebarToggle').addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+            });
+
+            document.querySelectorAll('.sidebar .nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.querySelectorAll('.sidebar .nav-link').forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const section = this.dataset.section;
+                    document.querySelectorAll('[id^="section-"]').forEach(el => el.style.display = 'none');
+                    const target = document.getElementById('section-' + section);
+                    if (target) target.style.display = 'block';
+
+                    if (window.innerWidth <= 768) {
+                        sidebar.classList.remove('active');
+                    }
+
+                    // Load data based on section
+                    if (section === 'medicines') loadMedicines();
+                    if (section === 'orders') loadOrders();
+                    if (section === 'sales') loadSales();
+                    if (section === 'expenses') loadExpenses();
+                    if (section === 'audit') loadAudit();
+                    if (section === 'analytics') loadAnalytics();
+                });
+            });
+
+            // ============================================
+            // 5. LOAD DASHBOARD
+            // ============================================
+            async function loadDashboard() {
+                try {
+                    const response = await fetch('/api/analytics', {
+                        headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                    });
+                    const data = await response.json();
+
+                    document.getElementById('totalSales').textContent = data.totalSales || 0;
+                    document.getElementById('totalRevenue').textContent = (data.totalRevenue || 0).toFixed(2);
+                    document.getElementById('totalOrders').textContent = data.totalOrders || 0;
+                    document.getElementById('pendingOrders').textContent = data.pendingOrders || 0;
+                    document.getElementById('pendingBadge').textContent = data.pendingOrders || 0;
+
+                    // Charts
+                    createSalesChart(data);
+                    createOrdersChart(data);
+
+                } catch (error) {
+                    console.error('Dashboard error:', error);
+                }
+            }
+
+            function createSalesChart(data) {
+                const ctx = document.getElementById('salesChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'],
+                        datasets: [{
+                            label: 'المبيعات',
+                            data: [data.totalRevenue || 0, 0, 0, 0, 0, 0],
+                            borderColor: '#667eea',
+                            backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { display: false }
+                        }
+                    }
+                });
+            }
+
+            function createOrdersChart(data) {
+                const ctx = document.getElementById('ordersChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['مقبول', 'مرفوض', 'معلق'],
+                        datasets: [{
+                            data: [
+                                data.approvedOrders || 0,
+                                data.rejectedOrders || 0,
+                                data.pendingOrders || 0
+                            ],
+                            backgroundColor: ['#28a745', '#dc3545', '#ffc107']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'bottom' }
+                        }
+                    }
+                });
+            }
+
+            // ============================================
+            // 6. LOAD MEDICINES
+            // ============================================
+            async function loadMedicines() {
+                const tbody = document.getElementById('medicinesBody');
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center">جاري التحميل...</td></tr>';
+
+                try {
+                    const response = await fetch('/api/medicines', {
+                        headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                    });
+                    const medicines = await response.json();
+
+                    if (medicines.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="7" class="text-center">لا توجد أدوية</td></tr>';
+                        return;
+                    }
+
+                    tbody.innerHTML = medicines.map((med, i) => `
+                        <tr>
+                            <td>${i + 1}</td>
+                            <td>
+                                ${med.imageUrl ? `<img src="${med.imageUrl}" style="width:40px;height:40px;object-fit:cover;border-radius:5px;">` : '-'}
+                            </td>
+                            <td>${med.name}</td>
+                            <td>${med.category || 'عام'}</td>
+                            <td>${med.price} جنيه</td>
+                            <td>${med.stock}</td>
+                            <td>
+                                <button class="btn btn-sm btn-primary" onclick="editMedicine('${med.id}')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteMedicine('${med.id}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+
+                } catch (error) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="text-center text-danger">حدث خطأ</td></tr>';
+                }
+            }
+
+            // ============================================
+            // 7. LOAD ORDERS
+            // ============================================
+            async function loadOrders() {
+                const tbody = document.getElementById('ordersBody');
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center">جاري التحميل...</td></tr>';
+
+                try {
+                    const response = await fetch('/api/orders', {
+                        headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                    });
+                    const orders = await response.json();
+
+                    if (orders.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="7" class="text-center">لا توجد طلبات</td></tr>';
+                        return;
+                    }
+
+                    tbody.innerHTML = orders.map((order, i) => {
+                        const statusBadge = {
+                            'pending': '<span class="badge-status pending">معلق</span>',
+                            'approved': '<span class="badge-status approved">مقبول</span>',
+                            'rejected': '<span class="badge-status rejected">مرفوض</span>'
+                        }[order.status] || order.status;
+
+                        return `
+                            <tr>
+                                <td>${i + 1}</td>
+                                <td>${order.customerName || order.userAccountName}</td>
+                                <td>${order.orderType}</td>
+                                <td>${order.totalAmount} جنيه</td>
+                                <td>${order.paymentMethod}</td>
+                                <td>${statusBadge}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-info" onclick="viewOrder('${order.id}')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    ${order.status === 'pending' ? `
+                                        <button class="btn btn-sm btn-success" onclick="updateOrderStatus('${order.id}','approved')">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" onclick="updateOrderStatus('${order.id}','rejected')">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    ` : ''}
+                                </td>
+                            </tr>
+                        `;
+                    }).join('');
+
+                } catch (error) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="text-center text-danger">حدث خطأ</td></tr>';
+                }
+            }
+
+            // ============================================
+            // 8. LOAD SALES
+            // ============================================
+            async function loadSales() {
+                const tbody = document.getElementById('salesBody');
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center">جاري التحميل...</td></tr>';
+
+                try {
+                    const response = await fetch('/api/orders', {
+                        headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                    });
+                    const orders = await response.json();
+                    const sales = orders.filter(o => o.status === 'approved');
+
+                    if (sales.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="7" class="text-center">لا توجد مبيعات</td></tr>';
+                        return;
+                    }
+
+                    tbody.innerHTML = sales.map((sale, i) => `
+                        <tr>
+                            <td>${i + 1}</td>
+                            <td>${sale.orderType}</td>
+                            <td>${sale.orderType}</td>
+                            <td>${sale.items?.length || 1}</td>
+                            <td>${sale.totalAmount} جنيه</td>
+                            <td>${sale.customerName}</td>
+                            <td>${new Date(sale.createdAt).toLocaleDateString('ar-EG')}</td>
+                        </tr>
+                    `).join('');
+
+                } catch (error) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="text-center text-danger">حدث خطأ</td></tr>';
+                }
+            }
+
+            // ============================================
+            // 9. LOAD EXPENSES
+            // ============================================
+            async function loadExpenses() {
+                const tbody = document.getElementById('expensesBody');
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center">جاري التحميل...</td></tr>';
+
+                try {
+                    const response = await fetch('/api/expenses', {
+                        headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                    });
+                    const expenses = await response.json();
+
+                    if (expenses.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="5" class="text-center">لا توجد مصروفات</td></tr>';
+                        return;
+                    }
+
+                    tbody.innerHTML = expenses.map((exp, i) => `
+                        <tr>
+                            <td>${i + 1}</td>
+                            <td>${exp.name}</td>
+                            <td>${exp.amount} جنيه</td>
+                            <td>${exp.notes || '-'}</td>
+                            <td>${new Date(exp.date).toLocaleDateString('ar-EG')}</td>
+                        </tr>
+                    `).join('');
+
+                } catch (error) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">حدث خطأ</td></tr>';
+                }
+            }
+
+            // ============================================
+            // 10. LOAD AUDIT
+            // ============================================
+            async function loadAudit() {
+                const tbody = document.getElementById('auditBody');
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center">جاري التحميل...</td></tr>';
+
+                try {
+                    const response = await fetch('/api/audit-logs', {
+                        headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                    });
+                    const logs = await response.json();
+
+                    if (logs.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="5" class="text-center">لا توجد سجلات</td></tr>';
+                        return;
+                    }
+
+                    tbody.innerHTML = logs.map((log, i) => `
+                        <tr>
+                            <td>${i + 1}</td>
+                            <td>${log.adminName}</td>
+                            <td>${log.action}</td>
+                            <td>${new Date(log.date).toLocaleString('ar-EG')}</td>
+                            <td>${log.ip || '-'}</td>
+                        </tr>
+                    `).join('');
+
+                } catch (error) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">حدث خطأ</td></tr>';
+                }
+            }
+
+            // ============================================
+            // 11. LOAD ANALYTICS
+            // ============================================
+            function loadAnalytics() {
+                // Placeholder - can be extended with real data
+                const ctx1 = document.getElementById('dailyChart').getContext('2d');
+                new Chart(ctx1, {
+                    type: 'bar',
+                    data: {
+                        labels: ['أحد', 'إثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت'],
+                        datasets: [{
+                            label: 'المبيعات',
+                            data: [12, 19, 3, 5, 2, 3, 7],
+                            backgroundColor: '#667eea'
+                        }]
+                    }
+                });
+
+                const ctx2 = document.getElementById('weeklyChart').getContext('2d');
+                new Chart(ctx2, {
+                    type: 'bar',
+                    data: {
+                        labels: ['أسبوع 1', 'أسبوع 2', 'أسبوع 3', 'أسبوع 4'],
+                        datasets: [{
+                            label: 'المبيعات',
+                            data: [12, 19, 3, 5],
+                            backgroundColor: '#28a745'
+                        }]
+                    }
+                });
+
+                const ctx3 = document.getElementById('monthlyChart').getContext('2d');
+                new Chart(ctx3, {
+                    type: 'line',
+                    data: {
+                        labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'],
+                        datasets: [{
+                            label: 'المبيعات',
+                            data: [12, 19, 3, 5, 2, 3, 7, 10, 15, 20, 25, 30],
+                            borderColor: '#ff6b00',
+                            fill: true,
+                            backgroundColor: 'rgba(255,107,0,0.1)'
+                        }]
+                    }
+                });
+            }
+
+            // ============================================
+            // 12. SAVE MEDICINE
+            // ============================================
+            document.getElementById('saveMedicineBtn').addEventListener('click', async function() {
+                const name = document.getElementById('medName').value.trim();
+                const category = document.getElementById('medCategory').value.trim();
+                const price = document.getElementById('medPrice').value;
+                const stock = document.getElementById('medStock').value;
+                const description = document.getElementById('medDescription').value.trim();
+
+                if (!name || !price || !stock) {
+                    alert('الرجاء ملء جميع الحقول المطلوبة');
+                    return;
+                }
+
+                this.disabled = true;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الحفظ...';
+
+                try {
+                    const response = await fetch('/api/medicines', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + localStorage.getItem('token')
+                        },
+                        body: JSON.stringify({ name, category, price, stock, description })
+                    });
+
+                    if (!response.ok) throw new Error('فشل الحفظ');
+
+                    alert('تم إضافة الدواء بنجاح');
+                    document.getElementById('addMedicineModal').querySelector('.btn-close').click();
+                    document.getElementById('addMedicineForm').reset();
+                    loadMedicines();
+
+                } catch (error) {
+                    alert(error.message);
+                } finally {
+                    this.disabled = false;
+                    this.innerHTML = '<i class="fas fa-save"></i> حفظ';
+                }
+            });
+
+            // ============================================
+            // 13. SAVE SALE
+            // ============================================
+            document.getElementById('saveSaleBtn').addEventListener('click', async function() {
+                const productName = document.getElementById('saleProductName').value.trim();
+                const productType = document.getElementById('saleProductType').value;
+                const quantity = document.getElementById('saleQuantity').value;
+                const unitPrice = document.getElementById('saleUnitPrice').value;
+                const customerName = document.getElementById('saleCustomer').value.trim();
+                const notes = document.getElementById('saleNotes').value.trim();
+
+                if (!productName || !quantity || !unitPrice) {
+                    alert('الرجاء ملء جميع الحقول المطلوبة');
+                    return;
+                }
+
+                this.disabled = true;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الحفظ...';
+
+                try {
+                    const orderData = {
+                        orderType: productType,
+                        items: [{ name: productName, quantity: parseInt(quantity), price: parseFloat(unitPrice) }],
+                        totalAmount: parseFloat(quantity) * parseFloat(unitPrice),
+                        paymentMethod: 'cash',
+                        transactionId: 'manual-' + Date.now(),
+                        customerName: customerName || 'عميل',
+                        specialInstructions: notes
+                    };
+
+                    const response = await fetch('/api/orders', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + localStorage.getItem('token')
+                        },
+                        body: JSON.stringify(orderData)
+                    });
+
+                    if (!response.ok) throw new Error('فشل الحفظ');
+
+                    alert('تم إضافة المبيعات بنجاح');
+                    document.getElementById('addSaleModal').querySelector('.btn-close').click();
+                    document.getElementById('addSaleForm').reset();
+                    loadSales();
+
+                } catch (error) {
+                    alert(error.message);
+                } finally {
+                    this.disabled = false;
+                    this.innerHTML = '<i class="fas fa-save"></i> حفظ';
+                }
+            });
+
+            // ============================================
+            // 14. SAVE EXPENSE
+            // ============================================
+            document.getElementById('saveExpenseBtn').addEventListener('click', async function() {
+                const name = document.getElementById('expenseName').value.trim();
+                const amount = document.getElementById('expenseAmount').value;
+                const notes = document.getElementById('expenseNotes').value.trim();
+
+                if (!name || !amount) {
+                    alert('الرجاء ملء جميع الحقول المطلوبة');
+                    return;
+                }
+
+                this.disabled = true;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الحفظ...';
+
+                try {
+                    const response = await fetch('/api/expenses', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + localStorage.getItem('token')
+                        },
+                        body: JSON.stringify({ name, amount, notes })
+                    });
+
+                    if (!response.ok) throw new Error('فشل الحفظ');
+
+                    alert('تم إضافة المصروف بنجاح');
+                    document.getElementById('addExpenseModal').querySelector('.btn-close').click();
+                    document.getElementById('addExpenseForm').reset();
+                    loadExpenses();
+
+                } catch (error) {
+                    alert(error.message);
+                } finally {
+                    this.disabled = false;
+                    this.innerHTML = '<i class="fas fa-save"></i> حفظ';
+                }
+            });
+
+            // ============================================
+            // 15. ORDER ACTIONS
+            // ============================================
+            window.viewOrder = async function(id) {
+                try {
+                    const response = await fetch('/api/orders', {
+                        headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                    });
+                    const orders = await response.json();
+                    const order = orders.find(o => o.id === id);
+
+                    if (!order) {
+                        document.getElementById('orderDetailsBody').innerHTML = '<p class="text-danger">الطلب غير موجود</p>';
+                    } else {
+                        document.getElementById('orderDetailsBody').innerHTML = `
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>رقم الطلب:</strong> ${order.id}</p>
+                                    <p><strong>العميل:</strong> ${order.customerName}</p>
+                                    <p><strong>البريد:</strong> ${order.customerEmail || '-'}</p>
+                                    <p><strong>الهاتف:</strong> ${order.customerPhone || '-'}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>النوع:</strong> ${order.orderType}</p>
+                                    <p><strong>المبلغ:</strong> ${order.totalAmount} جنيه</p>
+                                    <p><strong>طريقة الدفع:</strong> ${order.paymentMethod}</p>
+                                    <p><strong>الحالة:</strong> ${order.status}</p>
+                                </div>
+                            </div>
+                            ${order.items?.length ? `
+                                <hr>
+                                <h6>المنتجات:</h6>
+                                <ul>
+                                    ${order.items.map(item => `<li>${item.name} x ${item.quantity} = ${item.price * item.quantity} جنيه</li>`).join('')}
+                                </ul>
+                            ` : ''}
+                            ${order.deliveryAddress ? `<p><strong>العنوان:</strong> ${order.deliveryAddress}</p>` : ''}
+                            ${order.specialInstructions ? `<p><strong>ملاحظات:</strong> ${order.specialInstructions}</p>` : ''}
+                            ${order.rejectionReason ? `<p class="text-danger"><strong>سبب الرفض:</strong> ${order.rejectionReason}</p>` : ''}
+                        `;
+                    }
+
+                    new bootstrap.Modal(document.getElementById('orderDetailsModal')).show();
+
+                } catch (error) {
+                    document.getElementById('orderDetailsBody').innerHTML = '<p class="text-danger">حدث خطأ</p>';
+                }
+            };
+
+            window.updateOrderStatus = async function(id, status) {
+                if (!confirm(`هل أنت متأكد من ${status === 'approved' ? 'قبول' : 'رفض'} هذا الطلب؟`)) return;
+
+                try {
+                    const response = await fetch(`/api/orders/${id}/status`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + localStorage.getItem('token')
+                        },
+                        body: JSON.stringify({ status })
+                    });
+
+                    if (!response.ok) throw new Error('فشل تحديث الحالة');
+
+                    alert('تم تحديث حالة الطلب بنجاح');
+                    loadOrders();
+
+                } catch (error) {
+                    alert(error.message);
+                }
+            };
+
+            // ============================================
+            // 16. DELETE MEDICINE
+            // ============================================
+            window.deleteMedicine = async function(id) {
+                if (!confirm('هل أنت متأكد من حذف هذا الدواء؟')) return;
+
+                try {
+                    const response = await fetch(`/api/medicines/${id}`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                    });
+
+                    if (!response.ok) throw new Error('فشل الحذف');
+
+                    alert('تم حذف الدواء بنجاح');
+                    loadMedicines();
+
+                } catch (error) {
+                    alert(error.message);
+                }
+            };
+
+            // ============================================
+            // 17. EDIT MEDICINE
+            // ============================================
+            window.editMedicine = async function(id) {
+                alert('سيتم إضافة التعديل قريباً');
+            };
+
+            // ============================================
+            // 18. EMAIL SEND
+            // ============================================
+            document.getElementById('emailForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const to = document.getElementById('emailTo').value.trim();
+                const subject = document.getElementById('emailSubject').value.trim();
+                const message = document.getElementById('emailMessage').value.trim();
+
+                if (!to || !subject || !message) {
+                    alert('الرجاء ملء جميع الحقول');
+                    return;
+                }
+
+                const btn = document.getElementById('sendEmailBtn');
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
+
+                try {
+                    const response = await fetch('/api/smtp/send', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + localStorage.getItem('token')
+                        },
+                        body: JSON.stringify({ to, subject, message })
+                    });
+
+                    if (!response.ok) throw new Error('فشل الإرسال');
+
+                    alert('تم إرسال البريد بنجاح');
+                    document.getElementById('emailForm').reset();
+
+                } catch (error) {
+                    alert(error.message);
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-paper-plane"></i> إرسال';
+                }
+            });
+
+            // ============================================
+            // 19. AI CHAT
+            // ============================================
+            const chatMessages = document.getElementById('chatMessages');
+            const chatInput = document.getElementById('chatInput');
+
+            document.getElementById('chatSendBtn').addEventListener('click', sendChatMessage);
+            chatInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') sendChatMessage();
+            });
+
+            async function sendChatMessage() {
+                const message = chatInput.value.trim();
+                if (!message) return;
+
+                // Add user message
+                chatMessages.innerHTML += `<div class="chat-message user">${message}</div>`;
+                chatInput.value = '';
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                try {
+                    const response = await fetch('/api/ai/chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + localStorage.getItem('token')
+                        },
+                        body: JSON.stringify({ message })
+                    });
+
+                    const data = await response.json();
+                    chatMessages.innerHTML += `<div class="chat-message bot">${data.response}</div>`;
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                } catch (error) {
+                    chatMessages.innerHTML += `<div class="chat-message bot">❌ حدث خطأ، حاول مرة أخرى</div>`;
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }
+            }
+
+            // ============================================
+            // 20. EXPORT REPORTS
+            // ============================================
+            window.exportReport = function(format) {
+                alert(`سيتم تصدير التقرير بصيغة ${format.toUpperCase()}`);
+            };
+
+            // ============================================
+            // 21. INITIAL LOAD
+            // ============================================
+            loadDashboard();
+        });
+    </script>
+</body>
+</html>
