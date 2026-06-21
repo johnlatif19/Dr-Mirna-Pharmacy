@@ -7,7 +7,6 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const cloudinary = require('cloudinary').v2;
 const nodemailer = require('nodemailer');
-const multer = require('multer');
 const { OpenAI } = require('openai');
 const axios = require('axios');
 const path = require('path');
@@ -15,12 +14,28 @@ require('dotenv').config();
 
 const app = express();
 
-// Initialize Firebase
-const serviceAccount = JSON.parse(process.env.FIREBASE_CONFIG);
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
-const db = admin.firestore();
+// =============================================
+// 🔥 FIREBASE INITIALIZATION - FIXED
+// =============================================
+let db;
+
+// التحقق إذا كان Firebase مهيأ مسبقاً
+if (!admin.apps.length) {
+  try {
+    const serviceAccount = JSON.parse(process.env.FIREBASE_CONFIG);
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount)
+    });
+    console.log('✅ Firebase initialized successfully');
+  } catch (error) {
+    console.error('❌ Firebase initialization error:', error.message);
+    process.exit(1);
+  }
+} else {
+  console.log('ℹ️ Firebase already initialized, using existing app');
+}
+
+db = admin.firestore();
 
 // Configure Cloudinary
 cloudinary.config({
