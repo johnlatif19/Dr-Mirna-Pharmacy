@@ -48,16 +48,20 @@
       "dest": "/public/package.html"
     },
     {
+      "src": "/pay-offer",
+      "dest": "/public/pay-offer.html"
+    },
+    {
       "src": "/pay-package",
       "dest": "/public/pay-package.html"
     },
     {
-      "src": "/(.*)",
-      "dest": "/public/index.html"
-    }
+      "src": "/privacy-policy",
+      "dest": "/public/privacy-policy.html"
+    },
     {
       "src": "/(.*)",
-      "dest": "/public/$1"
+      "dest": "/public/index.html"
     }
   ]
 }
