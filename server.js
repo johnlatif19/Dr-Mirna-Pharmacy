@@ -49,18 +49,29 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
-// Configure Email
-const transporter = nodemailer.createTransporter({
-  host: process.env.SMTP_HOST,
-  port: parseInt(process.env.SMTP_PORT),
-  secure: false,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS
-  }
-});
+// =============================================
+// 📧 EMAIL CONFIGURATION - FIXED
+// =============================================
+let transporter;
+try {
+  transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST || 'smtp.gmail.com',
+    port: parseInt(process.env.SMTP_PORT) || 587,
+    secure: false,
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS
+    }
+  });
+  console.log('✅ Email transporter configured successfully');
+} catch (error) {
+  console.error('❌ Email transporter error:', error.message);
+  transporter = null;
+}
 
-// Middleware
+// =============================================
+// MIDDLEWARE
+// =============================================
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
@@ -101,12 +112,18 @@ const isAdmin = (req, res, next) => {
   next();
 };
 
-// Helper Functions
+// =============================================
+// HELPER FUNCTIONS
+// =============================================
 const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
 
 const sendEmail = async (to, subject, html) => {
+  if (!transporter) {
+    console.log('⚠️ Email disabled: transporter not configured');
+    return false;
+  }
   try {
     await transporter.sendMail({
       from: process.env.SMTP_FROM,
@@ -135,7 +152,9 @@ const sendTelegram = async (message) => {
   }
 };
 
-// Admin Login Route (للأدمن فقط باستخدام username)
+// =============================================
+// ADMIN LOGIN ROUTE
+// =============================================
 app.post('/api/auth/admin-login', async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -208,7 +227,9 @@ app.post('/api/auth/admin-login', async (req, res) => {
   }
 });
 
-// Auth Routes
+// =============================================
+// AUTH ROUTES
+// =============================================
 app.post('/api/auth/signup', async (req, res) => {
   try {
     const { fullName, email, password, confirmPassword } = req.body;
@@ -464,7 +485,9 @@ app.post('/api/auth/reset-password', async (req, res) => {
   }
 });
 
-// Protected Routes
+// =============================================
+// PROTECTED ROUTES
+// =============================================
 app.get('/api/user/profile', authenticateToken, async (req, res) => {
   try {
     const userDoc = await db.collection('users').doc(req.user.userId).get();
@@ -487,7 +510,9 @@ app.get('/api/user/profile', authenticateToken, async (req, res) => {
   }
 });
 
-// Medicine Routes
+// =============================================
+// MEDICINE ROUTES
+// =============================================
 app.post('/api/medicines', authenticateToken, isAdmin, async (req, res) => {
   try {
     const { name, category, price, stock, description, image } = req.body;
@@ -636,7 +661,9 @@ app.delete('/api/medicines/:id', authenticateToken, isAdmin, async (req, res) =>
   }
 });
 
-// Orders Routes
+// =============================================
+// ORDERS ROUTES
+// =============================================
 app.post('/api/orders', authenticateToken, async (req, res) => {
   try {
     const { 
@@ -674,7 +701,7 @@ app.post('/api/orders', authenticateToken, async (req, res) => {
     const docRef = await db.collection('orders').add(orderData);
 
     // AI Payment Verification (تلقائي في الخلفية)
-    const isMatch = transactionId === process.env.PAYMENT_REFERENCE_NUMBER;
+    const isMatch = transactionId === (process.env.PAYMENT_REFERENCE_NUMBER || '');
     const aiResult = {
       status: isMatch ? 'AI Passed' : 'AI Failed',
       message: isMatch ? 'Payment verified automatically' : 'Payment verification failed'
@@ -863,7 +890,9 @@ app.put('/api/orders/:id/status', authenticateToken, isAdmin, async (req, res) =
   }
 });
 
-// Analytics Routes
+// =============================================
+// ANALYTICS ROUTES
+// =============================================
 app.get('/api/analytics', authenticateToken, isAdmin, async (req, res) => {
   try {
     const analyticsRef = db.collection('analytics').doc('summary');
@@ -891,7 +920,9 @@ app.get('/api/analytics', authenticateToken, isAdmin, async (req, res) => {
   }
 });
 
-// AI Routes
+// =============================================
+// AI ROUTES
+// =============================================
 app.post('/api/ai/chat', authenticateToken, async (req, res) => {
   try {
     const { message } = req.body;
@@ -920,7 +951,9 @@ app.post('/api/ai/chat', authenticateToken, async (req, res) => {
   }
 });
 
-// SMTP Sender Route
+// =============================================
+// SMTP SENDER ROUTE
+// =============================================
 app.post('/api/smtp/send', authenticateToken, isAdmin, async (req, res) => {
   try {
     const { to, subject, message } = req.body;
@@ -955,7 +988,9 @@ app.post('/api/smtp/send', authenticateToken, isAdmin, async (req, res) => {
   }
 });
 
-// Expenses Routes
+// =============================================
+// EXPENSES ROUTES
+// =============================================
 app.post('/api/expenses', authenticateToken, isAdmin, async (req, res) => {
   try {
     const { name, amount, notes } = req.body;
@@ -1005,7 +1040,9 @@ app.get('/api/expenses', authenticateToken, isAdmin, async (req, res) => {
   }
 });
 
-// Audit Logs Routes
+// =============================================
+// AUDIT LOGS ROUTES
+// =============================================
 app.get('/api/audit-logs', authenticateToken, isAdmin, async (req, res) => {
   try {
     const snapshot = await db.collection('auditLogs')
@@ -1026,7 +1063,9 @@ app.get('/api/audit-logs', authenticateToken, isAdmin, async (req, res) => {
   }
 });
 
-// Telegram Notification Route
+// =============================================
+// TELEGRAM NOTIFICATION ROUTE
+// =============================================
 app.post('/api/telegram/notify', authenticateToken, async (req, res) => {
   try {
     const { message } = req.body;
@@ -1041,7 +1080,9 @@ app.post('/api/telegram/notify', authenticateToken, async (req, res) => {
   }
 });
 
-// Serve HTML files
+// =============================================
+// SERVE HTML FILES
+// =============================================
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
@@ -1090,7 +1131,10 @@ app.get('/privacy-policy', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'privacy-policy.html'));
 });
 
+// =============================================
+// START SERVER
+// =============================================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
