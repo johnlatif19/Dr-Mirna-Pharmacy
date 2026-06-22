@@ -15,11 +15,10 @@ require('dotenv').config();
 const app = express();
 
 // =============================================
-// 🔥 FIREBASE INITIALIZATION - FIXED
+// 🔥 FIREBASE INITIALIZATION
 // =============================================
 let db;
 
-// التحقق إذا كان Firebase مهيأ مسبقاً
 if (!admin.apps.length) {
   try {
     const serviceAccount = JSON.parse(process.env.FIREBASE_CONFIG);
@@ -37,21 +36,31 @@ if (!admin.apps.length) {
 
 db = admin.firestore();
 
-// Configure Cloudinary
+// =============================================
+// ☁️ CLOUDINARY CONFIGURATION
+// =============================================
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-// Configure OpenAI
+// =============================================
+// 🤖 OPENAI CONFIGURATION
+// =============================================
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
 // =============================================
-// 📧 EMAIL CONFIGURATION - FIXED
+// 📧 EMAIL CONFIGURATION - IMPROVED
 // =============================================
+const LOGO_URL = 'https://i.postimg.cc/KY95Xr8R/Dr-Mirna.jpg';
+const PHARMACY_NAME = 'صيدلية د/ميرنا صفوت';
+const PHARMACY_PHONE = process.env.PHARMACY_PHONE || '+20123456789';
+const PHARMACY_EMAIL = process.env.SMTP_USER || 'info@drmirnapharmacy.com';
+const PHARMACY_ADDRESS = process.env.PHARMACY_ADDRESS || 'مصر - القاهرة';
+
 let transporter;
 try {
   transporter = nodemailer.createTransport({
@@ -61,6 +70,9 @@ try {
     auth: {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASS
+    },
+    tls: {
+      rejectUnauthorized: false
     }
   });
   console.log('✅ Email transporter configured successfully');
@@ -70,23 +82,324 @@ try {
 }
 
 // =============================================
-// MIDDLEWARE
+// 🎨 EMAIL TEMPLATE FUNCTION
 // =============================================
-app.use(helmet());
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));
+const buildEmailTemplate = (title, content, buttonText, buttonLink, extraInfo) => {
+  return `
+    <!DOCTYPE html>
+    <html dir="rtl" lang="ar">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>${title}</title>
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+        body {
+          font-family: 'Tajawal', 'Segoe UI', Tahoma, sans-serif;
+          background: #f0f4f8;
+          direction: rtl;
+          padding: 20px;
+        }
+        .email-container {
+          max-width: 600px;
+          margin: 0 auto;
+          background: #ffffff;
+          border-radius: 24px;
+          overflow: hidden;
+          box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+          border: 1px solid rgba(102, 126, 234, 0.15);
+        }
+        .email-header {
+          background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+          padding: 30px 30px 20px;
+          text-align: center;
+          position: relative;
+          overflow: hidden;
+        }
+        .email-header::before {
+          content: '';
+          position: absolute;
+          top: -50%;
+          left: -50%;
+          right: -50%;
+          bottom: -50%;
+          background: radial-gradient(circle at 30% 50%, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+          pointer-events: none;
+        }
+        .email-header .logo-container {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 15px;
+          position: relative;
+          z-index: 1;
+        }
+        .email-header .logo-container img {
+          width: 70px;
+          height: 70px;
+          border-radius: 50%;
+          border: 3px solid rgba(255,255,255,0.3);
+          box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+          object-fit: cover;
+        }
+        .email-header .logo-container .pharmacy-name {
+          color: #ffffff;
+          font-size: 22px;
+          font-weight: 700;
+          letter-spacing: 1px;
+          text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .email-header .logo-container .pharmacy-name span {
+          color: #667eea;
+        }
+        .email-header .sub-title {
+          color: rgba(255,255,255,0.6);
+          font-size: 13px;
+          margin-top: 5px;
+          position: relative;
+          z-index: 1;
+        }
+        .email-body {
+          padding: 35px 35px 25px;
+          background: #ffffff;
+        }
+        .email-body .greeting {
+          font-size: 20px;
+          font-weight: 700;
+          color: #1a1a2e;
+          margin-bottom: 10px;
+        }
+        .email-body .greeting .highlight {
+          color: #667eea;
+        }
+        .email-body .message-content {
+          color: #444466;
+          line-height: 1.8;
+          font-size: 15px;
+          margin: 15px 0 20px;
+        }
+        .email-body .message-content p {
+          margin-bottom: 12px;
+        }
+        .email-body .message-content strong {
+          color: #1a1a2e;
+        }
+        .email-body .info-box {
+          background: #f8f9ff;
+          border-radius: 16px;
+          padding: 20px 25px;
+          margin: 20px 0;
+          border-right: 4px solid #667eea;
+          border-left: 4px solid #667eea;
+        }
+        .email-body .info-box .info-item {
+          display: flex;
+          justify-content: space-between;
+          padding: 6px 0;
+          border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+          font-size: 14px;
+        }
+        .email-body .info-box .info-item:last-child {
+          border-bottom: none;
+        }
+        .email-body .info-box .info-item .label {
+          color: #8888aa;
+          font-weight: 500;
+        }
+        .email-body .info-box .info-item .value {
+          color: #1a1a2e;
+          font-weight: 600;
+        }
+        .email-body .btn-container {
+          text-align: center;
+          margin: 25px 0 15px;
+        }
+        .email-body .btn-container .btn {
+          display: inline-block;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: #ffffff !important;
+          text-decoration: none;
+          padding: 14px 45px;
+          border-radius: 50px;
+          font-weight: 600;
+          font-size: 16px;
+          transition: all 0.3s;
+          box-shadow: 0 8px 25px rgba(102, 126, 234, 0.35);
+        }
+        .email-body .btn-container .btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 12px 35px rgba(102, 126, 234, 0.45);
+        }
+        .email-body .extra-info {
+          background: #f0f4ff;
+          border-radius: 12px;
+          padding: 15px 20px;
+          margin: 15px 0;
+          font-size: 14px;
+          color: #444466;
+          border: 1px dashed rgba(102, 126, 234, 0.3);
+        }
+        .email-body .extra-info .emoji {
+          font-size: 18px;
+          margin-left: 8px;
+        }
+        .email-footer {
+          background: #f8f9fa;
+          padding: 20px 35px;
+          text-align: center;
+          border-top: 1px solid #eef0f5;
+        }
+        .email-footer .footer-text {
+          color: #8888aa;
+          font-size: 13px;
+          line-height: 1.6;
+        }
+        .email-footer .footer-text strong {
+          color: #667eea;
+        }
+        .email-footer .social-links {
+          margin-top: 12px;
+          display: flex;
+          justify-content: center;
+          gap: 15px;
+        }
+        .email-footer .social-links a {
+          color: #8888aa;
+          text-decoration: none;
+          font-size: 20px;
+          transition: color 0.3s;
+        }
+        .email-footer .social-links a:hover {
+          color: #667eea;
+        }
+        .email-footer .footer-divider {
+          width: 60px;
+          height: 2px;
+          background: linear-gradient(90deg, #667eea, #764ba2);
+          margin: 10px auto;
+          border-radius: 2px;
+        }
+        .email-footer .disclaimer {
+          font-size: 11px;
+          color: #aaaacc;
+          margin-top: 10px;
+        }
+        @media (max-width: 480px) {
+          .email-body { padding: 20px; }
+          .email-header .logo-container .pharmacy-name { font-size: 17px; }
+          .email-header .logo-container img { width: 55px; height: 55px; }
+          .email-body .btn-container .btn { padding: 12px 30px; font-size: 14px; }
+          .email-body .info-box { padding: 15px; }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="email-container">
+        <!-- Header -->
+        <div class="email-header">
+          <div class="logo-container">
+            <img src="${LOGO_URL}" alt="${PHARMACY_NAME}">
+            <div>
+              <div class="pharmacy-name">${PHARMACY_NAME}</div>
+              <div class="sub-title">🩺 ${PHARMACY_ADDRESS}</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Body -->
+        <div class="email-body">
+          <div class="greeting">
+            👋 مرحباً، <span class="highlight">عميلنا العزيز</span>
+          </div>
+          
+          <div class="message-content">
+            ${content}
+          </div>
+          
+          ${extraInfo ? `<div class="extra-info">${extraInfo}</div>` : ''}
+          
+          ${buttonText && buttonLink ? `
+            <div class="btn-container">
+              <a href="${buttonLink}" class="btn">${buttonText}</a>
+            </div>
+          ` : ''}
+          
+          <div style="text-align: center; margin-top: 20px; font-size: 13px; color: #8888aa;">
+            <span>📞 ${PHARMACY_PHONE}</span>
+            <span style="margin: 0 10px;">|</span>
+            <span>✉️ ${PHARMACY_EMAIL}</span>
+          </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="email-footer">
+          <div class="footer-divider"></div>
+          <div class="footer-text">
+            <strong>${PHARMACY_NAME}</strong> — 🏥 صحتك تهمنا
+          </div>
+          <div class="footer-text" style="font-size: 12px;">
+            ${PHARMACY_ADDRESS} · ${PHARMACY_PHONE}
+          </div>
+          <div class="disclaimer">
+            © ${new Date().getFullYear()} ${PHARMACY_NAME}. جميع الحقوق محفوظة.
+          </div>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+};
 
-// Rate Limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  message: 'Too many requests from this IP'
-});
-app.use('/api/', limiter);
+// =============================================
+// 📧 SEND EMAIL FUNCTION (IMPROVED)
+// =============================================
+const sendEmail = async (to, subject, title, content, buttonText = null, buttonLink = null, extraInfo = null) => {
+  if (!transporter) {
+    console.log('⚠️ Email disabled: transporter not configured');
+    return false;
+  }
+  
+  try {
+    const html = buildEmailTemplate(title, content, buttonText, buttonLink, extraInfo);
+    
+    await transporter.sendMail({
+      from: `"${PHARMACY_NAME}" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
+      to,
+      subject: `🩺 ${subject}`,
+      html: html
+    });
+    return true;
+  } catch (error) {
+    console.error('Email error:', error);
+    return false;
+  }
+};
 
-// JWT Middleware
+// =============================================
+// 📱 TELEGRAM HELPER
+// =============================================
+const sendTelegram = async (message) => {
+  try {
+    await axios.post(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      chat_id: process.env.TELEGRAM_CHAT_ID,
+      text: message,
+      parse_mode: 'HTML'
+    });
+    return true;
+  } catch (error) {
+    console.error('Telegram error:', error);
+    return false;
+  }
+};
+
+// =============================================
+// 🔐 JWT MIDDLEWARE
+// =============================================
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
@@ -104,7 +417,6 @@ const authenticateToken = (req, res, next) => {
   }
 };
 
-// Admin Middleware
 const isAdmin = (req, res, next) => {
   if (req.user.role !== 'admin') {
     return res.status(403).json({ error: 'Admin access required' });
@@ -113,47 +425,30 @@ const isAdmin = (req, res, next) => {
 };
 
 // =============================================
-// HELPER FUNCTIONS
+// 🔢 HELPER FUNCTIONS
 // =============================================
 const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
 
-const sendEmail = async (to, subject, html) => {
-  if (!transporter) {
-    console.log('⚠️ Email disabled: transporter not configured');
-    return false;
-  }
-  try {
-    await transporter.sendMail({
-      from: process.env.SMTP_FROM,
-      to,
-      subject,
-      html
-    });
-    return true;
-  } catch (error) {
-    console.error('Email error:', error);
-    return false;
-  }
-};
+// =============================================
+// 🚀 MIDDLEWARE
+// =============================================
+app.use(helmet());
+app.use(cors());
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+app.use(express.static('public'));
 
-const sendTelegram = async (message) => {
-  try {
-    await axios.post(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
-      chat_id: process.env.TELEGRAM_CHAT_ID,
-      text: message,
-      parse_mode: 'HTML'
-    });
-    return true;
-  } catch (error) {
-    console.error('Telegram error:', error);
-    return false;
-  }
-};
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: 'Too many requests from this IP'
+});
+app.use('/api/', limiter);
 
 // =============================================
-// ADMIN LOGIN ROUTE
+// 🔐 ADMIN LOGIN
 // =============================================
 app.post('/api/auth/admin-login', async (req, res) => {
   try {
@@ -163,12 +458,10 @@ app.post('/api/auth/admin-login', async (req, res) => {
       return res.status(400).json({ error: 'Username and password required' });
     }
 
-    // التحقق من username و password من .env
     if (username !== process.env.ADMIN_USERNAME || password !== process.env.ADMIN_PASSWORD) {
       return res.status(401).json({ error: 'Invalid admin credentials' });
     }
 
-    // البحث عن المستخدم في Firebase
     const usersSnapshot = await db.collection('users')
       .where('email', '==', process.env.ADMIN_EMAIL)
       .get();
@@ -177,7 +470,6 @@ app.post('/api/auth/admin-login', async (req, res) => {
     let userId;
 
     if (usersSnapshot.empty) {
-      // لو الأدمن مش موجود في Firebase، نضيفه
       const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD, 10);
       const newAdmin = {
         fullName: 'Admin',
@@ -198,7 +490,6 @@ app.post('/api/auth/admin-login', async (req, res) => {
       userData = doc.data();
     }
 
-    // Create JWT
     const token = jwt.sign(
       { 
         userId: userId, 
@@ -228,13 +519,12 @@ app.post('/api/auth/admin-login', async (req, res) => {
 });
 
 // =============================================
-// AUTH ROUTES
+// 👤 USER AUTH ROUTES
 // =============================================
 app.post('/api/auth/signup', async (req, res) => {
   try {
     const { fullName, email, password, confirmPassword } = req.body;
 
-    // Validation
     if (!fullName || !email || !password || !confirmPassword) {
       return res.status(400).json({ error: 'All fields are required' });
     }
@@ -247,7 +537,6 @@ app.post('/api/auth/signup', async (req, res) => {
       return res.status(400).json({ error: 'Password must be at least 6 characters' });
     }
 
-    // Check if user exists
     const usersSnapshot = await db.collection('users')
       .where('email', '==', email)
       .get();
@@ -256,10 +545,8 @@ app.post('/api/auth/signup', async (req, res) => {
       return res.status(400).json({ error: 'User already exists' });
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user
     const userData = {
       fullName,
       email,
@@ -272,19 +559,23 @@ app.post('/api/auth/signup', async (req, res) => {
 
     const docRef = await db.collection('users').add(userData);
 
-    // Send welcome email
+    // Send welcome email with nice template
     await sendEmail(
       email,
-      'Welcome to Dr. Mirna Safwat Pharmacy',
-      `<h1>Welcome ${fullName}</h1>
-       <p>Thank you for registering with Dr. Mirna Safwat Pharmacy.</p>
-       <p>Your account has been created successfully.</p>`
+      'مرحباً بك في صيدليتنا',
+      `مرحباً بك في ${PHARMACY_NAME}`,
+      `
+        <p>نشكرك على ثقتك واختيارك <strong>${PHARMACY_NAME}</strong>.</p>
+        <p>تم إنشاء حسابك بنجاح، ونحن في خدمتك دائماً.</p>
+        <p>يمكنك الآن تصفح منتجاتنا وطلب ما تحتاجه بكل سهولة.</p>
+        <p>💊 <strong>نتمنى لك دوام الصحة والعافية</strong></p>
+      `,
+      'تصفح المنتجات',
+      'https://drmirnapharmacy.com'
     );
 
-    // Send Telegram notification
     await sendTelegram(`🆕 New User Registration\n\nName: ${fullName}\nEmail: ${email}\nRole: User`);
 
-    // Log audit
     await db.collection('auditLogs').add({
       adminName: 'System',
       action: 'User Registration',
@@ -312,7 +603,6 @@ app.post('/api/auth/login', async (req, res) => {
       return res.status(400).json({ error: 'Email and password required' });
     }
 
-    // Find user by email
     const usersSnapshot = await db.collection('users')
       .where('email', '==', email)
       .get();
@@ -324,18 +614,15 @@ app.post('/api/auth/login', async (req, res) => {
     const userDoc = usersSnapshot.docs[0];
     const userData = userDoc.data();
 
-    // Check if user is active
     if (!userData.isActive) {
       return res.status(401).json({ error: 'Account is deactivated' });
     }
 
-    // Verify password
     const validPassword = await bcrypt.compare(password, userData.password);
     if (!validPassword) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    // Create JWT
     const token = jwt.sign(
       { 
         userId: userDoc.id, 
@@ -372,7 +659,6 @@ app.post('/api/auth/forgot-password', async (req, res) => {
       return res.status(400).json({ error: 'Email is required' });
     }
 
-    // Find user
     const usersSnapshot = await db.collection('users')
       .where('email', '==', email)
       .get();
@@ -383,9 +669,8 @@ app.post('/api/auth/forgot-password', async (req, res) => {
 
     const userDoc = usersSnapshot.docs[0];
     const otp = generateOTP();
-    const expiresAt = new Date(Date.now() + 2 * 60 * 1000); // 2 minutes
+    const expiresAt = new Date(Date.now() + 2 * 60 * 1000);
 
-    // Save OTP
     await db.collection('resetTokens').add({
       userId: userDoc.id,
       email: email,
@@ -394,14 +679,23 @@ app.post('/api/auth/forgot-password', async (req, res) => {
       used: false
     });
 
-    // Send OTP email
     await sendEmail(
       email,
-      'Password Reset OTP - Dr. Mirna Safwat Pharmacy',
-      `<h1>Password Reset</h1>
-       <p>Your OTP for password reset is: <strong>${otp}</strong></p>
-       <p>This OTP is valid for 2 minutes.</p>
-       <p>If you didn't request this, please ignore this email.</p>`
+      '🔐 إعادة تعيين كلمة المرور',
+      `إعادة تعيين كلمة المرور - ${PHARMACY_NAME}`,
+      `
+        <p>لقد طلبت إعادة تعيين كلمة المرور لحسابك في <strong>${PHARMACY_NAME}</strong>.</p>
+        <p>🔑 <strong>رمز التحقق الخاص بك هو:</strong></p>
+      `,
+      'نسخ الرمز',
+      '#',
+      `
+        <div style="font-size: 32px; text-align: center; font-weight: 700; color: #667eea; letter-spacing: 5px; padding: 10px 0;">
+          ${otp}
+        </div>
+        <p style="text-align: center; font-size: 13px; color: #8888aa;">⏳ هذا الرمز صالح لمدة 2 دقيقة</p>
+        <p style="text-align: center; font-size: 13px; color: #8888aa;">إذا لم تطلب إعادة التعيين، يرجى تجاهل هذه الرسالة</p>
+      `
     );
 
     res.json({ message: 'OTP sent to your email' });
@@ -428,7 +722,6 @@ app.post('/api/auth/reset-password', async (req, res) => {
       return res.status(400).json({ error: 'Password must be at least 6 characters' });
     }
 
-    // Verify OTP
     const tokensSnapshot = await db.collection('resetTokens')
       .where('email', '==', email)
       .where('otp', '==', otp)
@@ -442,12 +735,10 @@ app.post('/api/auth/reset-password', async (req, res) => {
     const tokenDoc = tokensSnapshot.docs[0];
     const tokenData = tokenDoc.data();
 
-    // Check expiry
     if (new Date(tokenData.expiresAt) < new Date()) {
       return res.status(400).json({ error: 'OTP expired' });
     }
 
-    // Find user
     const usersSnapshot = await db.collection('users')
       .where('email', '==', email)
       .get();
@@ -457,18 +748,26 @@ app.post('/api/auth/reset-password', async (req, res) => {
     }
 
     const userDoc = usersSnapshot.docs[0];
-
-    // Update password
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     await userDoc.ref.update({
       password: hashedPassword,
       updatedAt: new Date().toISOString()
     });
 
-    // Mark OTP as used
     await tokenDoc.ref.update({ used: true });
 
-    // Log audit
+    // Send confirmation email
+    await sendEmail(
+      email,
+      '✅ تم إعادة تعيين كلمة المرور',
+      `تم إعادة تعيين كلمة المرور - ${PHARMACY_NAME}`,
+      `
+        <p>تم إعادة تعيين كلمة المرور لحسابك في <strong>${PHARMACY_NAME}</strong> بنجاح.</p>
+        <p>🔐 إذا لم تقم بهذا الإجراء، يرجى التواصل معنا فوراً.</p>
+        <p>💚 نتمنى لك تجربة طيبة معنا.</p>
+      `
+    );
+
     await db.collection('auditLogs').add({
       adminName: userDoc.data().fullName,
       action: 'Password Reset',
@@ -486,7 +785,7 @@ app.post('/api/auth/reset-password', async (req, res) => {
 });
 
 // =============================================
-// PROTECTED ROUTES
+// 👤 USER PROFILE
 // =============================================
 app.get('/api/user/profile', authenticateToken, async (req, res) => {
   try {
@@ -511,7 +810,7 @@ app.get('/api/user/profile', authenticateToken, async (req, res) => {
 });
 
 // =============================================
-// MEDICINE ROUTES
+// 💊 MEDICINE ROUTES
 // =============================================
 app.post('/api/medicines', authenticateToken, isAdmin, async (req, res) => {
   try {
@@ -521,7 +820,6 @@ app.post('/api/medicines', authenticateToken, isAdmin, async (req, res) => {
       return res.status(400).json({ error: 'Name, price, and stock are required' });
     }
 
-    // Upload image to Cloudinary if provided
     let imageUrl = null;
     if (image) {
       const uploadResult = await cloudinary.uploader.upload(image, {
@@ -543,7 +841,6 @@ app.post('/api/medicines', authenticateToken, isAdmin, async (req, res) => {
 
     const docRef = await db.collection('medicines').add(medicineData);
 
-    // Log audit
     await db.collection('auditLogs').add({
       adminName: req.user.fullName,
       action: 'Medicine Added',
@@ -604,7 +901,6 @@ app.put('/api/medicines/:id', authenticateToken, isAdmin, async (req, res) => {
       updatedAt: new Date().toISOString()
     };
 
-    // Upload new image if provided
     if (image) {
       const uploadResult = await cloudinary.uploader.upload(image, {
         folder: 'pharmacy/medicines'
@@ -614,7 +910,6 @@ app.put('/api/medicines/:id', authenticateToken, isAdmin, async (req, res) => {
 
     await medicineRef.update(updateData);
 
-    // Log audit
     await db.collection('auditLogs').add({
       adminName: req.user.fullName,
       action: 'Medicine Updated',
@@ -644,7 +939,6 @@ app.delete('/api/medicines/:id', authenticateToken, isAdmin, async (req, res) =>
 
     await medicineRef.delete();
 
-    // Log audit
     await db.collection('auditLogs').add({
       adminName: req.user.fullName,
       action: 'Medicine Deleted',
@@ -662,7 +956,7 @@ app.delete('/api/medicines/:id', authenticateToken, isAdmin, async (req, res) =>
 });
 
 // =============================================
-// ORDERS ROUTES
+// 📦 ORDERS ROUTES
 // =============================================
 app.post('/api/orders', authenticateToken, async (req, res) => {
   try {
@@ -700,24 +994,50 @@ app.post('/api/orders', authenticateToken, async (req, res) => {
 
     const docRef = await db.collection('orders').add(orderData);
 
+    const isMatch = transactionId === (process.env.PAYMENT_REFERENCE_NUMBER || '');
     const aiResult = {
-      status: 'AI Passed',
-      message: 'Payment received successfully'
+      status: isMatch ? 'AI Passed' : 'AI Failed',
+      message: isMatch ? 'Payment verified automatically' : 'Payment verification failed'
     };
 
-    // Update order with AI verification result
     await docRef.update({
       aiVerification: aiResult,
       aiVerifiedAt: new Date().toISOString()
     });
 
-    // Send Telegram notification
+    // Send order confirmation email
+    await sendEmail(
+      orderData.customerEmail,
+      '📋 تأكيد الطلب',
+      `تأكيد الطلب #${docRef.id.substring(0, 8)}`,
+      `
+        <p>شكراً لك على طلبك من <strong>${PHARMACY_NAME}</strong>.</p>
+        <p>📦 <strong>تفاصيل الطلب:</strong></p>
+        <div class="info-box">
+          ${items.map(item => `
+            <div class="info-item">
+              <span class="label">${item.name}</span>
+              <span class="value">${item.quantity} × ${item.price} جنيه = ${item.quantity * item.price} جنيه</span>
+            </div>
+          `).join('')}
+          <div class="info-item" style="border-top: 2px solid #667eea; margin-top: 8px; padding-top: 8px;">
+            <span class="label"><strong>الإجمالي</strong></span>
+            <span class="value"><strong>${orderData.totalAmount} جنيه</strong></span>
+          </div>
+        </div>
+        <p>📌 حالة الطلب: <strong>قيد المراجعة</strong></p>
+        <p>سنقوم بإعلامك عند الموافقة على الطلب.</p>
+      `,
+      'متابعة الطلب',
+      'https://drmirnapharmacy.com/orders'
+    );
+
     await sendTelegram(
       `🛒 New Order Created\n\n` +
       `Order ID: ${docRef.id}\n` +
       `Type: ${orderType}\n` +
       `Customer: ${req.user.fullName}\n` +
-      `Total: $${orderData.totalAmount}\n` +
+      `Total: ${orderData.totalAmount} جنيه\n` +
       `AI Status: ${aiResult.status}\n` +
       `Status: Pending`
     );
@@ -739,7 +1059,6 @@ app.get('/api/orders', authenticateToken, async (req, res) => {
   try {
     let query = db.collection('orders').orderBy('createdAt', 'desc');
     
-    // If not admin, show only user's orders
     if (req.user.role !== 'admin') {
       query = query.where('userId', '==', req.user.userId);
     }
@@ -754,6 +1073,74 @@ app.get('/api/orders', authenticateToken, async (req, res) => {
 
   } catch (error) {
     console.error('Get orders error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+app.put('/api/orders/:id', authenticateToken, isAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { orderType, items, totalAmount, customerName, specialInstructions } = req.body;
+
+    const orderRef = db.collection('orders').doc(id);
+    const doc = await orderRef.get();
+
+    if (!doc.exists) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+
+    const updateData = {
+      orderType: orderType || doc.data().orderType,
+      items: items || doc.data().items,
+      totalAmount: totalAmount || doc.data().totalAmount,
+      customerName: customerName || doc.data().customerName,
+      specialInstructions: specialInstructions || doc.data().specialInstructions,
+      updatedAt: new Date().toISOString()
+    };
+
+    await orderRef.update(updateData);
+
+    await db.collection('auditLogs').add({
+      adminName: req.user.fullName,
+      action: 'Order Updated',
+      date: new Date().toISOString(),
+      ip: req.ip,
+      recordId: id
+    });
+
+    res.json({ message: 'Order updated successfully' });
+
+  } catch (error) {
+    console.error('Update order error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+app.delete('/api/orders/:id', authenticateToken, isAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const orderRef = db.collection('orders').doc(id);
+    const doc = await orderRef.get();
+
+    if (!doc.exists) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+
+    await orderRef.delete();
+
+    await db.collection('auditLogs').add({
+      adminName: req.user.fullName,
+      action: 'Order Deleted',
+      date: new Date().toISOString(),
+      ip: req.ip,
+      recordId: id
+    });
+
+    res.json({ message: 'Order deleted successfully' });
+
+  } catch (error) {
+    console.error('Delete order error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -786,7 +1173,6 @@ app.put('/api/orders/:id/status', authenticateToken, isAdmin, async (req, res) =
 
     await orderRef.update(updateData);
 
-    // If approved, add to sales
     if (status === 'approved') {
       await db.collection('sales').add({
         orderId: id,
@@ -803,7 +1189,6 @@ app.put('/api/orders/:id/status', authenticateToken, isAdmin, async (req, res) =
         createdAt: new Date().toISOString()
       });
 
-      // Update analytics
       const analyticsRef = db.collection('analytics').doc('summary');
       const analyticsDoc = await analyticsRef.get();
       if (analyticsDoc.exists) {
@@ -829,37 +1214,58 @@ app.put('/api/orders/:id/status', authenticateToken, isAdmin, async (req, res) =
       }
     }
 
-    // Send notifications
     const userEmail = orderData.userEmail || orderData.customerEmail;
     const userName = orderData.userAccountName || orderData.customerName;
 
     if (status === 'approved') {
       await sendEmail(
         userEmail,
-        'Order Approved - Dr. Mirna Safwat Pharmacy',
-        `<h1>Order Approved ✅</h1>
-         <p>Dear ${userName},</p>
-         <p>Your order #${id} has been approved.</p>
-         <p>Total Amount: $${orderData.totalAmount}</p>
-         <p>Thank you for shopping with us!</p>`
+        '✅ تم قبول طلبك',
+        `✅ تم قبول طلبك #${id.substring(0, 8)}`,
+        `
+          <p>عزيزي <strong>${userName}</strong>،</p>
+          <p>يسعدنا إبلاغك بأن طلبك رقم <strong>#${id.substring(0, 8)}</strong> قد تم <strong>قبوله</strong>.</p>
+          <div class="info-box">
+            <div class="info-item">
+              <span class="label">📦 قيمة الطلب</span>
+              <span class="value">${orderData.totalAmount} جنيه</span>
+            </div>
+            <div class="info-item">
+              <span class="label">📅 تاريخ الطلب</span>
+              <span class="value">${new Date(orderData.createdAt).toLocaleDateString('ar-EG')}</span>
+            </div>
+          </div>
+          <p>شكراً لك على ثقتك بنا. ❤️</p>
+        `,
+        'متابعة الطلب',
+        'https://drmirnapharmacy.com/orders'
       );
 
       await sendTelegram(
         `✅ Order Approved\n\n` +
         `Order ID: ${id}\n` +
         `Customer: ${userName}\n` +
-        `Amount: $${orderData.totalAmount}\n` +
+        `Amount: ${orderData.totalAmount} جنيه\n` +
         `Approved by: ${req.user.fullName}`
       );
     } else if (status === 'rejected') {
       await sendEmail(
         userEmail,
-        'Order Rejected - Dr. Mirna Safwat Pharmacy',
-        `<h1>Order Rejected ❌</h1>
-         <p>Dear ${userName},</p>
-         <p>Your order #${id} has been rejected.</p>
-         <p>Reason: ${updateData.rejectionReason}</p>
-         <p>Please contact us if you have any questions.</p>`
+        '❌ تم رفض طلبك',
+        `❌ تم رفض طلبك #${id.substring(0, 8)}`,
+        `
+          <p>عزيزي <strong>${userName}</strong>،</p>
+          <p>نأسف لإبلاغك بأن طلبك رقم <strong>#${id.substring(0, 8)}</strong> قد تم <strong>رفضه</strong>.</p>
+          <div class="info-box">
+            <div class="info-item">
+              <span class="label">📝 سبب الرفض</span>
+              <span class="value">${updateData.rejectionReason}</span>
+            </div>
+          </div>
+          <p>إذا كان لديك أي استفسار، يرجى التواصل معنا. 📞</p>
+        `,
+        'تواصل معنا',
+        `https://drmirnapharmacy.com/contact`
       );
 
       await sendTelegram(
@@ -871,7 +1277,6 @@ app.put('/api/orders/:id/status', authenticateToken, isAdmin, async (req, res) =
       );
     }
 
-    // Log audit
     await db.collection('auditLogs').add({
       adminName: req.user.fullName,
       action: `Order ${status}`,
@@ -889,7 +1294,7 @@ app.put('/api/orders/:id/status', authenticateToken, isAdmin, async (req, res) =
 });
 
 // =============================================
-// ANALYTICS ROUTES
+// 📊 ANALYTICS ROUTES
 // =============================================
 app.get('/api/analytics', authenticateToken, isAdmin, async (req, res) => {
   try {
@@ -919,13 +1324,12 @@ app.get('/api/analytics', authenticateToken, isAdmin, async (req, res) => {
 });
 
 // =============================================
-// AI ROUTES
+// 🤖 AI CHAT
 // =============================================
 app.post('/api/ai/chat', authenticateToken, async (req, res) => {
   try {
     const { message } = req.body;
 
-    // Search for medicine in Firestore
     const medicinesSnapshot = await db.collection('medicines')
       .where('name', '>=', message)
       .where('name', '<=', message + '\uf8ff')
@@ -935,11 +1339,11 @@ app.post('/api/ai/chat', authenticateToken, async (req, res) => {
     if (!medicinesSnapshot.empty) {
       const medicine = medicinesSnapshot.docs[0].data();
       res.json({
-        response: `✅ ${medicine.name} is available.\nPrice: $${medicine.price}\nStock: ${medicine.stock} units\nCategory: ${medicine.category}`
+        response: `✅ <strong>${medicine.name}</strong> متوفر حالياً.\n💊 السعر: <strong>${medicine.price} جنيه</strong>\n📦 المخزون: <strong>${medicine.stock} وحدة</strong>\n📂 الفئة: ${medicine.category}\n📝 ${medicine.description || ''}`
       });
     } else {
       res.json({
-        response: `❌ Medicine "${message}" not found.\nPlease contact the pharmacy: ${process.env.PHARMACY_PHONE}`
+        response: `❌ عذراً، الدواء "<strong>${message}</strong>" غير متوفر حالياً.\n📞 يمكنك التواصل معنا على ${PHARMACY_PHONE} للاستفسار.`
       });
     }
 
@@ -950,7 +1354,7 @@ app.post('/api/ai/chat', authenticateToken, async (req, res) => {
 });
 
 // =============================================
-// SMTP SENDER ROUTE
+// 📧 SMTP SEND ROUTE (IMPROVED)
 // =============================================
 app.post('/api/smtp/send', authenticateToken, isAdmin, async (req, res) => {
   try {
@@ -960,16 +1364,31 @@ app.post('/api/smtp/send', authenticateToken, isAdmin, async (req, res) => {
       return res.status(400).json({ error: 'All fields are required' });
     }
 
-    await sendEmail(
+    const success = await sendEmail(
       to,
       subject,
-      `<p>${message.replace(/\n/g, '<br>')}</p>
-       <br>
-       <p>---</p>
-       <p>Sent from Dr. Mirna Safwat Pharmacy Dashboard</p>`
+      `📧 ${subject}`,
+      `
+        <p>${message.replace(/\n/g, '<br>')}</p>
+        <br>
+        <div style="background: #f8f9ff; border-radius: 12px; padding: 15px; border-right: 4px solid #667eea;">
+          <p style="margin: 0; color: #8888aa; font-size: 13px;">
+            ✉️ تم إرسال هذه الرسالة من لوحة تحكم <strong>${PHARMACY_NAME}</strong>
+          </p>
+          <p style="margin: 5px 0 0 0; color: #8888aa; font-size: 13px;">
+            📅 ${new Date().toLocaleString('ar-EG')}
+          </p>
+        </div>
+      `,
+      null,
+      null,
+      null
     );
 
-    // Log audit
+    if (!success) {
+      return res.status(500).json({ error: 'Failed to send email' });
+    }
+
     await db.collection('auditLogs').add({
       adminName: req.user.fullName,
       action: 'SMTP Email Sent',
@@ -978,7 +1397,11 @@ app.post('/api/smtp/send', authenticateToken, isAdmin, async (req, res) => {
       recordId: `email-${Date.now()}`
     });
 
-    res.json({ message: 'Email sent successfully' });
+    res.json({ 
+      message: '✅ تم إرسال البريد الإلكتروني بنجاح',
+      to: to,
+      subject: subject
+    });
 
   } catch (error) {
     console.error('SMTP send error:', error);
@@ -987,7 +1410,7 @@ app.post('/api/smtp/send', authenticateToken, isAdmin, async (req, res) => {
 });
 
 // =============================================
-// EXPENSES ROUTES
+// 💰 EXPENSES ROUTES
 // =============================================
 app.post('/api/expenses', authenticateToken, isAdmin, async (req, res) => {
   try {
@@ -1039,7 +1462,7 @@ app.get('/api/expenses', authenticateToken, isAdmin, async (req, res) => {
 });
 
 // =============================================
-// AUDIT LOGS ROUTES
+// 📋 AUDIT LOGS ROUTES
 // =============================================
 app.get('/api/audit-logs', authenticateToken, isAdmin, async (req, res) => {
   try {
@@ -1062,7 +1485,7 @@ app.get('/api/audit-logs', authenticateToken, isAdmin, async (req, res) => {
 });
 
 // =============================================
-// TELEGRAM NOTIFICATION ROUTE
+// 📱 TELEGRAM NOTIFICATION ROUTE
 // =============================================
 app.post('/api/telegram/notify', authenticateToken, async (req, res) => {
   try {
@@ -1079,7 +1502,7 @@ app.post('/api/telegram/notify', authenticateToken, async (req, res) => {
 });
 
 // =============================================
-// SERVE HTML FILES
+// 🖥️ SERVE HTML FILES
 // =============================================
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -1130,9 +1553,11 @@ app.get('/privacy-policy', (req, res) => {
 });
 
 // =============================================
-// START SERVER
+// 🚀 START SERVER
 // =============================================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`📧 Email: ${process.env.SMTP_USER}`);
+  console.log(`🖼️ Logo: ${LOGO_URL}`);
 });
