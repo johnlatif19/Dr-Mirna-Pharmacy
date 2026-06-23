@@ -82,32 +82,21 @@
             border-color: #667eea;
         }
 
-        .theme-toggle .sun-icon {
-            display: inline-block;
-        }
-        .theme-toggle .moon-icon {
-            display: none;
-        }
+        .theme-toggle .sun-icon { display: inline-block; }
+        .theme-toggle .moon-icon { display: none; }
 
-        [data-bs-theme="dark"] .theme-toggle .sun-icon {
-            display: none;
-        }
-        [data-bs-theme="dark"] .theme-toggle .moon-icon {
-            display: inline-block;
-        }
+        [data-bs-theme="dark"] .theme-toggle .sun-icon { display: none; }
+        [data-bs-theme="dark"] .theme-toggle .moon-icon { display: inline-block; }
 
         .logo {
             text-align: center;
             margin-bottom: 30px;
         }
 
-        .logo img {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
+        .logo .brand-icon {
+            font-size: 4rem;
+            color: #667eea;
             margin-bottom: 10px;
-            border: 3px solid #667eea;
-            padding: 3px;
         }
 
         .logo h3 {
@@ -280,7 +269,9 @@
         </button>
 
         <div class="logo">
-            <img src="https://i.postimg.cc/KY95Xr8R/Dr-Mirna.jpg" alt="Dr. Mirna">
+            <div class="brand-icon">
+                <i class="fas fa-prescription-bottle-alt"></i>
+            </div>
             <h3>صيدلية د/ميرنا صفوت</h3>
             <p>تسجيل الدخول إلى حسابك</p>
         </div>
@@ -324,11 +315,21 @@
             <p style="color: var(--text-secondary); font-size: 0.95rem;">
                 ليس لديك حساب؟ <a href="/signup" class="link-text">إنشاء حساب جديد</a>
             </p>
+            <p style="color: var(--text-secondary); font-size: 0.85rem;">
+                <i class="fas fa-user-shield" style="color: #667eea;"></i>
+                دخول الأدمن <a href="/login-dashboard" class="link-text">من هنا</a>
+            </p>
+            <a href="/" class="back-home">
+                <i class="fas fa-arrow-right"></i> العودة للرئيسية
+            </a>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // ============================================
+            // THEME TOGGLE
+            // ============================================
             const themeToggle = document.getElementById('themeToggle');
             const html = document.documentElement;
             
@@ -342,6 +343,9 @@
                 localStorage.setItem('theme', newTheme);
             });
 
+            // ============================================
+            // PASSWORD TOGGLE
+            // ============================================
             const togglePassword = document.getElementById('togglePassword');
             const passwordInput = document.getElementById('password');
 
@@ -352,6 +356,9 @@
                 this.querySelector('i').classList.toggle('fa-eye-slash');
             });
 
+            // ============================================
+            // LOGIN FORM
+            // ============================================
             const loginForm = document.getElementById('loginForm');
             const loginBtn = document.getElementById('loginBtn');
             const alertContainer = document.getElementById('alertContainer');
@@ -402,6 +409,7 @@
                         throw new Error(data.error || 'فشل تسجيل الدخول');
                     }
 
+                    // Store user data
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('user', JSON.stringify(data.user));
                     
@@ -413,7 +421,7 @@
                         localStorage.removeItem('savedEmail');
                     }
 
-                    showAlert('تم تسجيل الدخول بنجاح! جاري التحويل...', 'success');
+                    showAlert(`✅ مرحباً ${data.user.fullName}! تم تسجيل الدخول بنجاح`, 'success');
 
                     setTimeout(() => {
                         window.location.href = '/';
@@ -426,18 +434,23 @@
                 }
             });
 
-            // لو فيه token موجود يروح عالرئيسية
-            const token = localStorage.getItem('token');
-            if (token) {
-                window.location.href = '/';
-            }
-
+            // ============================================
+            // REMEMBER ME
+            // ============================================
             if (localStorage.getItem('rememberMe') === 'true') {
                 const savedEmail = localStorage.getItem('savedEmail');
                 if (savedEmail) {
                     document.getElementById('email').value = savedEmail;
                     document.getElementById('rememberMe').checked = true;
                 }
+            }
+
+            // ============================================
+            // REDIRECT IF ALREADY LOGGED IN
+            // ============================================
+            const token = localStorage.getItem('token');
+            if (token) {
+                window.location.href = '/';
             }
         });
     </script>
