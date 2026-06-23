@@ -1502,7 +1502,7 @@ app.post('/api/telegram/notify', authenticateToken, async (req, res) => {
 });
 
 // =============================================
-// 🖥️ SERVE HTML FILES - WITHOUT .html EXTENSION
+// 🖥️ SERVE HTML FILES
 // =============================================
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
