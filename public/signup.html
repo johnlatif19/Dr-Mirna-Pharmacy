@@ -54,7 +54,7 @@
             border-radius: 20px;
             padding: 40px;
             box-shadow: var(--card-shadow);
-            max-width: 500px;
+            max-width: 450px;
             width: 100%;
             position: relative;
         }
@@ -82,19 +82,11 @@
             border-color: #667eea;
         }
 
-        .theme-toggle .sun-icon {
-            display: inline-block;
-        }
-        .theme-toggle .moon-icon {
-            display: none;
-        }
+        .theme-toggle .sun-icon { display: inline-block; }
+        .theme-toggle .moon-icon { display: none; }
 
-        [data-bs-theme="dark"] .theme-toggle .sun-icon {
-            display: none;
-        }
-        [data-bs-theme="dark"] .theme-toggle .moon-icon {
-            display: inline-block;
-        }
+        [data-bs-theme="dark"] .theme-toggle .sun-icon { display: none; }
+        [data-bs-theme="dark"] .theme-toggle .moon-icon { display: inline-block; }
 
         .logo {
             text-align: center;
@@ -245,25 +237,24 @@
             color: #667eea;
         }
 
-        .password-strength {
-            height: 5px;
-            border-radius: 5px;
-            margin-top: 8px;
-            background: var(--border-color);
-            overflow: hidden;
+        .name-display {
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            border: 2px solid #667eea;
+            display: none;
         }
 
-        .password-strength-bar {
-            height: 100%;
-            width: 0%;
-            border-radius: 5px;
-            transition: width 0.3s ease;
+        .name-display .welcome-text {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #667eea;
         }
 
-        .password-strength-text {
-            font-size: 0.8rem;
-            margin-top: 5px;
-            color: var(--text-secondary);
+        .name-display .user-name {
+            color: var(--text-primary);
         }
 
         @media (max-width: 480px) {
@@ -296,12 +287,23 @@
             <p>إنشاء حساب جديد</p>
         </div>
 
+        <!-- Name Display after successful signup -->
+        <div class="name-display" id="nameDisplay">
+            <div class="welcome-text">
+                <i class="fas fa-hand-wave"></i> مرحباً بك، 
+                <span class="user-name" id="displayUserName">...</span>
+            </div>
+            <div style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 5px;">
+                <i class="fas fa-check-circle" style="color: #28a745;"></i> تم إنشاء حسابك بنجاح
+            </div>
+        </div>
+
         <div id="alertContainer"></div>
 
         <form id="signupForm">
             <div class="form-group">
-                <label class="form-label">الاسم كاملاً</label>
-                <input type="text" class="form-control" id="fullName" placeholder="أدخل اسمك الكامل" required>
+                <label class="form-label">الاسم الكامل</label>
+                <input type="text" class="form-control" id="fullName" placeholder="الاسم الكامل" required>
             </div>
 
             <div class="form-group">
@@ -312,33 +314,20 @@
             <div class="form-group">
                 <label class="form-label">كلمة المرور</label>
                 <div class="password-wrapper">
-                    <input type="password" class="form-control" id="password" placeholder="كلمة المرور" required minlength="6">
+                    <input type="password" class="form-control" id="password" placeholder="كلمة المرور" required>
                     <button type="button" class="password-toggle" id="togglePassword">
                         <i class="fas fa-eye"></i>
                     </button>
                 </div>
-                <div class="password-strength">
-                    <div class="password-strength-bar" id="strengthBar"></div>
-                </div>
-                <div class="password-strength-text" id="strengthText">ضعف</div>
             </div>
 
             <div class="form-group">
                 <label class="form-label">تأكيد كلمة المرور</label>
                 <div class="password-wrapper">
-                    <input type="password" class="form-control" id="confirmPassword" placeholder="كلمة المرور" required minlength="6">
+                    <input type="password" class="form-control" id="confirmPassword" placeholder="تأكيد كلمة المرور" required>
                     <button type="button" class="password-toggle" id="toggleConfirmPassword">
                         <i class="fas fa-eye"></i>
                     </button>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="termsCheck" required>
-                    <label class="form-check-label" for="termsCheck" style="color: var(--text-secondary); font-size: 0.9rem;">
-                        أوافق على <a href="/privacy-policy" class="link-text">سياسة الخصوصية</a> وشروط الاستخدام
-                    </label>
                 </div>
             </div>
 
@@ -377,10 +366,10 @@
                 localStorage.setItem('theme', newTheme);
             });
 
-            // Toggle Password Visibility
+            // Password Toggle
             const togglePassword = document.getElementById('togglePassword');
             const passwordInput = document.getElementById('password');
-            
+
             togglePassword.addEventListener('click', function() {
                 const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
                 passwordInput.setAttribute('type', type);
@@ -390,7 +379,7 @@
 
             const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
             const confirmPasswordInput = document.getElementById('confirmPassword');
-            
+
             toggleConfirmPassword.addEventListener('click', function() {
                 const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
                 confirmPasswordInput.setAttribute('type', type);
@@ -398,46 +387,11 @@
                 this.querySelector('i').classList.toggle('fa-eye-slash');
             });
 
-            // Password Strength
-            const strengthBar = document.getElementById('strengthBar');
-            const strengthText = document.getElementById('strengthText');
-
-            passwordInput.addEventListener('input', function() {
-                const password = this.value;
-                let strength = 0;
-                let message = 'ضعف';
-
-                if (password.length >= 6) strength += 1;
-                if (password.length >= 10) strength += 1;
-                if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength += 1;
-                if (/\d/.test(password)) strength += 1;
-                if (/[^a-zA-Z0-9]/.test(password)) strength += 1;
-
-                const percentage = (strength / 5) * 100;
-                strengthBar.style.width = percentage + '%';
-
-                if (strength <= 2) {
-                    strengthBar.style.background = '#dc3545';
-                    message = 'ضعيف';
-                } else if (strength <= 3) {
-                    strengthBar.style.background = '#ffc107';
-                    message = 'متوسط';
-                } else if (strength <= 4) {
-                    strengthBar.style.background = '#17a2b8';
-                    message = 'جيد';
-                } else {
-                    strengthBar.style.background = '#28a745';
-                    message = 'قوي جداً';
-                }
-
-                strengthText.textContent = 'قوة كلمة المرور: ' + message;
-                strengthText.style.color = strengthBar.style.background;
-            });
-
-            // Signup Form Submit
             const signupForm = document.getElementById('signupForm');
             const signupBtn = document.getElementById('signupBtn');
             const alertContainer = document.getElementById('alertContainer');
+            const nameDisplay = document.getElementById('nameDisplay');
+            const displayUserName = document.getElementById('displayUserName');
 
             function showAlert(message, type = 'danger') {
                 alertContainer.innerHTML = `
@@ -462,31 +416,19 @@
                 const email = document.getElementById('email').value.trim();
                 const password = document.getElementById('password').value;
                 const confirmPassword = document.getElementById('confirmPassword').value;
-                const termsCheck = document.getElementById('termsCheck').checked;
 
-                // Validation
                 if (!fullName || !email || !password || !confirmPassword) {
                     showAlert('الرجاء ملء جميع الحقول', 'warning');
                     return;
                 }
 
-                if (fullName.length < 3) {
-                    showAlert('الاسم يجب أن يكون 3 أحرف على الأقل', 'warning');
-                    return;
-                }
-
                 if (password !== confirmPassword) {
-                    showAlert('كلمة المرور وتأكيدها غير متطابقين', 'danger');
+                    showAlert('كلمة المرور غير متطابقة', 'warning');
                     return;
                 }
 
                 if (password.length < 6) {
                     showAlert('كلمة المرور يجب أن تكون 6 أحرف على الأقل', 'warning');
-                    return;
-                }
-
-                if (!termsCheck) {
-                    showAlert('يرجى الموافقة على سياسة الخصوصية وشروط الاستخدام', 'warning');
                     return;
                 }
 
@@ -508,11 +450,23 @@
                         throw new Error(data.error || 'فشل إنشاء الحساب');
                     }
 
-                    showAlert('تم إنشاء الحساب بنجاح! جاري التحويل إلى تسجيل الدخول...', 'success');
+                    // ✅ Show welcome message with user's name
+                    displayUserName.textContent = fullName;
+                    nameDisplay.style.display = 'block';
 
+                    showAlert(`✅ مرحباً ${fullName}! تم إنشاء حسابك بنجاح`, 'success');
+
+                    // Clear form
+                    signupForm.reset();
+
+                    // Enable button again
+                    signupBtn.disabled = false;
+                    signupBtn.innerHTML = '<i class="fas fa-user-plus"></i> إنشاء حساب';
+
+                    // Auto redirect to login after 3 seconds
                     setTimeout(() => {
                         window.location.href = '/login';
-                    }, 2000);
+                    }, 3000);
 
                 } catch (error) {
                     showAlert(error.message || 'حدث خطأ أثناء إنشاء الحساب', 'danger');
@@ -520,6 +474,12 @@
                     signupBtn.innerHTML = '<i class="fas fa-user-plus"></i> إنشاء حساب';
                 }
             });
+
+            // لو فيه token موجود يروح عالرئيسية
+            const token = localStorage.getItem('token');
+            if (token) {
+                window.location.href = '/';
+            }
         });
     </script>
 
