@@ -61,16 +61,21 @@
             border-bottom: 1px solid var(--border-color);
         }
 
-        .navbar-brand img {
-            height: 50px;
-            border-radius: 50%;
-            margin-left: 10px;
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         .navbar-brand span {
             color: #667eea;
             font-weight: 700;
             font-size: 1.2rem;
+        }
+
+        .brand-icon {
+            font-size: 2rem;
+            color: #667eea;
         }
 
         .nav-link {
@@ -96,6 +101,21 @@
         .btn-login-nav:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-admin-nav {
+            background: transparent;
+            color: var(--text-primary) !important;
+            border: 2px solid #667eea;
+            border-radius: 25px;
+            padding: 8px 25px !important;
+            transition: all 0.3s;
+        }
+
+        .btn-admin-nav:hover {
+            background: #667eea;
+            color: white !important;
+            transform: translateY(-2px);
         }
 
         /* Theme Toggle Button */
@@ -134,32 +154,10 @@
             display: inline-block;
         }
 
-    :root {
-    --bg-primary: #ffffff;
-    --bg-secondary: #f8f9fa;
-    --text-primary: #333333;
-    --text-secondary: #666666;
-    --card-bg: #ffffff;
-    --card-shadow: 0 5px 30px rgba(0,0,0,0.08);
-    --border-color: #f0f0f0;
-    --navbar-bg: rgba(255, 255, 255, 0.95);
-    --hero-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --footer-bg: #1a1a2e;
-    --footer-text: rgba(255,255,255,0.7);
-    }
-
-    [data-bs-theme="dark"] {
-    --bg-primary: #1a1a2e;
-    --bg-secondary: #16213e;
-    --text-primary: #ffffff;
-    --text-secondary: #b0b0b0;
-    --card-bg: #24243e;
-    --card-shadow: 0 5px 30px rgba(0,0,0,0.3);
-    --border-color: #333355;
-    --navbar-bg: rgba(26, 26, 46, 0.95);
-    --hero-gradient: linear-gradient(135deg, #2d1b4e 0%, #1a1a3e 100%);
-    --footer-bg: #0d0d1a;
-    --footer-text: rgba(255,255,255,0.6);
+        .hero-section {
+            background: var(--hero-gradient);
+            color: white;
+            padding: 80px 0;
         }
 
         .hero-title {
@@ -333,19 +331,69 @@
                 font-size: 1rem;
             }
         }
-        .contact-info a{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    text-decoration:none;
-    color:#333;
-    margin:10px 0;
-}
 
-.contact-info i{
-    width:25px;
-    font-size:18px;
-}
+        .contact-info a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--footer-text);
+            margin: 10px 0;
+            transition: all 0.3s;
+        }
+
+        .contact-info a:hover {
+            color: white;
+        }
+
+        .contact-info i {
+            width: 25px;
+            font-size: 18px;
+        }
+
+        /* User Status */
+        .user-status {
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-status .user-name {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .user-status .btn-logout {
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 5px 15px;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+
+        .user-status .btn-logout:hover {
+            background: #c82333;
+            transform: scale(1.05);
+        }
+
+        .user-status .btn-dashboard {
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 5px 15px;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .user-status .btn-dashboard:hover {
+            background: #218838;
+            transform: scale(1.05);
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -354,7 +402,7 @@
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container">
             <a class="navbar-brand" href="/">
-                <img src="https://i.postimg.cc/KY95Xr8R/Dr-Mirna.jpg" alt="Dr. Mirna">
+                <i class="fas fa-prescription-bottle-alt brand-icon"></i>
                 <span>صيدلية د/ميرنا صفوت</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -380,10 +428,29 @@
                             <span class="moon-icon"><i class="fas fa-moon"></i></span>
                         </button>
                     </li>
-                    <li class="nav-item">
+                    <!-- User Status (hidden when logged in) -->
+                    <li class="nav-item" id="guestNav">
                         <a class="nav-link btn-login-nav" href="/login">
                             <i class="fas fa-user"></i> تسجيل الدخول
                         </a>
+                    </li>
+                    <li class="nav-item" id="adminNav">
+                        <a class="nav-link btn-admin-nav" href="/login-dashboard">
+                            <i class="fas fa-user-shield"></i> دخول الأدمن
+                        </a>
+                    </li>
+                    <!-- User Status (visible when logged in) -->
+                    <li class="nav-item user-status" id="userNav">
+                        <span class="user-name" id="userNameDisplay">
+                            <i class="fas fa-user-circle"></i> 
+                            <span id="userNameText">مستخدم</span>
+                        </span>
+                        <a href="/dashboard" class="btn-dashboard">
+                            <i class="fas fa-tachometer-alt"></i> لوحة التحكم
+                        </a>
+                        <button class="btn-logout" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt"></i> خروج
+                        </button>
                     </li>
                 </ul>
             </div>
@@ -410,7 +477,9 @@
                     </div>
                 </div>
                 <div class="col-lg-6 text-center">
-                    <img src="https://i.postimg.cc/KY95Xr8R/Dr-Mirna.jpg" alt="Pharmacy" class="hero-image img-fluid" style="max-width: 400px; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+                    <div style="font-size: 8rem; color: rgba(255,255,255,0.9);">
+                        <i class="fas fa-prescription-bottle-alt"></i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -507,7 +576,7 @@
                     <div class="contact-info">
                         <a href="tel:+201208881905"><i class="fas fa-phone"></i><span>01208881905</span></a>
                         <a href="https://wa.me/201208881905" target="_blank"><i class="fab fa-whatsapp"></i><span>واتساب</span></a>
-                        <a href="https://maps.google.com/?q=30.0444,31.2357" target="_blank"><i class="fas fa-map-marker-alt"></i><span>13 شارع احمد محمود عمرو متفرع من الصفا والمروة بخلف بنزينة غازتك - الطوابق  فيصل</span></a>
+                        <a href="https://maps.google.com/?q=30.0444,31.2357" target="_blank"><i class="fas fa-map-marker-alt"></i><span>13 شارع احمد محمود عمرو متفرع من الصفا والمروة بخلف بنزينة غازتك - الطوابق فيصل</span></a>
                     </div>
                 </div>
                 <div class="col-lg-3">
@@ -525,16 +594,16 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Theme Toggle
         document.addEventListener('DOMContentLoaded', function() {
+            // ============================================
+            // THEME TOGGLE
+            // ============================================
             const themeToggle = document.getElementById('themeToggle');
             const html = document.documentElement;
             
-            // Check saved theme
             const savedTheme = localStorage.getItem('theme') || 'light';
             html.setAttribute('data-bs-theme', savedTheme);
             
-            // Toggle theme
             themeToggle.addEventListener('click', function() {
                 const currentTheme = html.getAttribute('data-bs-theme');
                 const newTheme = currentTheme === 'light' ? 'dark' : 'light';
@@ -542,7 +611,9 @@
                 localStorage.setItem('theme', newTheme);
             });
 
-            // Animate features on scroll
+            // ============================================
+            // ANIMATE FEATURES ON SCROLL
+            // ============================================
             const cards = document.querySelectorAll('.feature-card');
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
@@ -558,6 +629,66 @@
                 card.style.transition = 'all 0.6s ease';
                 observer.observe(card);
             });
+
+            // ============================================
+            // USER STATUS MANAGEMENT
+            // ============================================
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            
+            const guestNav = document.getElementById('guestNav');
+            const adminNav = document.getElementById('adminNav');
+            const userNav = document.getElementById('userNav');
+            const userNameText = document.getElementById('userNameText');
+
+            function updateUserStatus() {
+                if (token && user.fullName) {
+                    // User is logged in
+                    guestNav.style.display = 'none';
+                    adminNav.style.display = 'none';
+                    userNav.style.display = 'flex';
+                    userNameText.textContent = user.fullName;
+                } else {
+                    // User is not logged in
+                    guestNav.style.display = 'block';
+                    adminNav.style.display = 'block';
+                    userNav.style.display = 'none';
+                }
+            }
+
+            updateUserStatus();
+
+            // ============================================
+            // LOGOUT
+            // ============================================
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '/';
+            });
+
+            // ============================================
+            // CHECK IF TOKEN IS STILL VALID
+            // ============================================
+            if (token) {
+                // Optional: verify token with backend
+                fetch('/api/user/profile', {
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        // Token invalid, logout
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('user');
+                        updateUserStatus();
+                    }
+                })
+                .catch(() => {
+                    // Network error, keep user logged in
+                });
+            }
         });
     </script>
 </body>
