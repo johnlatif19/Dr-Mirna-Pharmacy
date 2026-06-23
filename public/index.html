@@ -103,17 +103,17 @@
             box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
         }
 
-        .btn-admin-nav {
+        .btn-signup-nav {
             background: transparent;
             color: var(--text-primary) !important;
-            border: 2px solid #667eea;
+            border: 2px solid #28a745;
             border-radius: 25px;
             padding: 8px 25px !important;
             transition: all 0.3s;
         }
 
-        .btn-admin-nav:hover {
-            background: #667eea;
+        .btn-signup-nav:hover {
+            background: #28a745;
             color: white !important;
             transform: translateY(-2px);
         }
@@ -350,50 +350,6 @@
             width: 25px;
             font-size: 18px;
         }
-
-        /* User Status */
-        .user-status {
-            display: none;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .user-status .user-name {
-            color: var(--text-primary);
-            font-weight: 500;
-        }
-
-        .user-status .btn-logout {
-            background: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 20px;
-            padding: 5px 15px;
-            font-size: 0.8rem;
-            transition: all 0.3s;
-        }
-
-        .user-status .btn-logout:hover {
-            background: #c82333;
-            transform: scale(1.05);
-        }
-
-        .user-status .btn-dashboard {
-            background: #28a745;
-            color: white;
-            border: none;
-            border-radius: 20px;
-            padding: 5px 15px;
-            font-size: 0.8rem;
-            transition: all 0.3s;
-            text-decoration: none;
-        }
-
-        .user-status .btn-dashboard:hover {
-            background: #218838;
-            transform: scale(1.05);
-            color: white;
-        }
     </style>
 </head>
 <body>
@@ -428,26 +384,15 @@
                             <span class="moon-icon"><i class="fas fa-moon"></i></span>
                         </button>
                     </li>
-                    <!-- User Status (hidden when logged in) -->
-                    <li class="nav-item" id="guestNav">
+                    <li class="nav-item">
+                        <a class="nav-link btn-signup-nav" href="/signup">
+                            <i class="fas fa-user-plus"></i> إنشاء حساب
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link btn-login-nav" href="/login">
                             <i class="fas fa-user"></i> تسجيل الدخول
                         </a>
-                    </li>
-                    <li class="nav-item" id="signupNav">
-                        <a class="nav-link btn-signup-nav" href="/signup">
-                            <i class="fas fa-user-shield"></i> إنشاء حساب جديد
-                        </a>
-                    </li>
-                    <!-- User Status (visible when logged in) -->
-                    <li class="nav-item user-status" id="userNav">
-                        <span class="user-name" id="userNameDisplay">
-                            <i class="fas fa-user-circle"></i> 
-                            <span id="userNameText">مستخدم</span>
-                        </span>
-                        <button class="btn-logout" id="logoutBtn">
-                            <i class="fas fa-sign-out-alt"></i> خروج
-                        </button>
                     </li>
                 </ul>
             </div>
@@ -626,66 +571,6 @@
                 card.style.transition = 'all 0.6s ease';
                 observer.observe(card);
             });
-
-            // ============================================
-            // USER STATUS MANAGEMENT
-            // ============================================
-            const token = localStorage.getItem('token');
-            const user = JSON.parse(localStorage.getItem('user') || '{}');
-            
-            const guestNav = document.getElementById('guestNav');
-            const adminNav = document.getElementById('adminNav');
-            const userNav = document.getElementById('userNav');
-            const userNameText = document.getElementById('userNameText');
-
-            function updateUserStatus() {
-                if (token && user.fullName) {
-                    // User is logged in
-                    guestNav.style.display = 'none';
-                    adminNav.style.display = 'none';
-                    userNav.style.display = 'flex';
-                    userNameText.textContent = user.fullName;
-                } else {
-                    // User is not logged in
-                    guestNav.style.display = 'block';
-                    adminNav.style.display = 'block';
-                    userNav.style.display = 'none';
-                }
-            }
-
-            updateUserStatus();
-
-            // ============================================
-            // LOGOUT
-            // ============================================
-            document.getElementById('logoutBtn').addEventListener('click', function() {
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
-                window.location.href = '/';
-            });
-
-            // ============================================
-            // CHECK IF TOKEN IS STILL VALID
-            // ============================================
-            if (token) {
-                // Optional: verify token with backend
-                fetch('/api/user/profile', {
-                    headers: {
-                        'Authorization': 'Bearer ' + token
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        // Token invalid, logout
-                        localStorage.removeItem('token');
-                        localStorage.removeItem('user');
-                        updateUserStatus();
-                    }
-                })
-                .catch(() => {
-                    // Network error, keep user logged in
-                });
-            }
         });
     </script>
 </body>
